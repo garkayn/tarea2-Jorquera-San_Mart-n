@@ -1,0 +1,85 @@
+INICIO DE ARCHIVO
+HABITACIONES
+10
+0 Cámara de pacificación de pacientes (INICIO)
+Entras y encuentras al asesino Víctor Zsasz, tallando una nueva cicatriz.
+1 Arkham Oeste (COMBATE)
+El ala oeste está en ruinas. De entre las sombras, los presos más violentos se lanzan hacia ti, armados con tubos oxidados y odio en los ojos.
+2 Arkham Norte (COMBATE)
+El Batmóvil está siendo atacado por un grupo de reclusos. Te ven y rodean rapidamente.
+3 Arkham Este (COMBATE)
+Ves lo que parece ser un cementerio. De repente, fanáticos del Joker con máscaras salen de su escondite, riendose y blandiendo cuchillos.
+4 Penitenciaría (EVENTO)
+Las puertas de máxima seguridad están abiertas de par en par, y el silencio es más aterrador que cualquier grito. Algo (o alguien) ha dejado un rastro de huellas de sangre que conduce al nivel inferior.
+5 Centro médico (EVENTO)
+El olor a desinfectante no logra ocultar el aroma metálico de la sangre. Las camillas están volcadas, y entre los frascos rotos de medicamentos, encuentras un informe médico con una sola palabra escrita en rojo: "¡Huye!"
+6 Tratamiento intensivo (EVENTO)
+Las luces parpadean sobre las paredes manchadas de sustancias no identificadas. Una silla de contención yace en el centro, las correas rotas y ensangrentadas. En el espejo blindado, alguien ha escrito: "NO ES SU RISA — ES EL AIRE. ¡NO RESPIRES!".
+7 Cloacas (EVENTO)
+El aire es denso y el agua putrefacta te llega a los tobillos. Ratas huyen de algo más grande que se mueve entre las sombras. Un susurro grave resuena en los túneles: "Te estoy esperando, murciélago..."
+8 Mansión Arkham (EVENTO)
+La antigua residencia de la familia Arkham se alza como un espectro. Las escaleras crujen bajo tus pies, y los retratos en las paredes parecen seguirte con la mirada.
+9 Jardín Botánico (EVENTO)
+La vegetación ha crecido salvaje, ahogando todo a su paso. Entre las enredaderas, ves flores venenosas de colores vibrantes.
+ARCOS
+9
+0 -> 1
+0 -> 2
+0 -> 3
+1 -> 4
+1 -> 5
+2 -> 6
+2 -> 7
+3 -> 8
+3 -> 9
+ENEMIGOS 
+2
+Recluso | Vida 10 | Ataque 3 | Precision 0.6 | Probabilidad 0.2
+Matón del Joker | Vida 15 | Ataque 5 | Precision 0.5 | Probabilidad 0.4
+JEFES
+7
+Bane | Vida 50 | Ataque 20 | Precision 0.5
+Harley Quinn | Vida 25 | Ataque 8 | Precision 0.9
+Cocodrilo Asesino | Vida 40 | Ataque 15 | Precision 0.7
+Espantapajaros | Vida 20 | Ataque 4 | Precision 0.5
+El Acertijo | Vida 10 | Ataque 2 | Precision 1
+Hiedra Venenosa | Vida 30 | Ataque 10 | Precision 0.6
+Joker | Vida 15 | Ataque 6 | Precision 0.9
+EVENTOS
+3
+&
+Tesoro
+Probabilidad 0.3
+Encuentras un tesoro!...
+A: Abrirlo
+Era una mímica! El terror afecta tu psique.
+-0.2 PRECISION
+B: Dejarlo
+Se ve sus, lo dejas pasar.
+Ninguna consecuencia.
+&
+Sentimiento
+Probabilidad 0.3
+Te empiezas a sentir extraño...
+A: Te acuestas en el suelo
+Te despiertas muy relajado y feliz!
++10 Vida
+B: Tratas de continuar
+Te mareas, te tropiezas, y te esguinzas la articulación metacarpofalángica!
+-5 Vida
+&
+Silueta
+Probabilidad 0.4
+Ves una silueta misteriosa a lo lejos.
+A: La tratas de dibujar.
+Logras un dibujo excelente, impresionando a todos tus amigos!
++7 Vida
+B: Lo tratas de identificar.
+Tras horas de forzar la vista logras entender que era una mancha en el cielo simplemente. Tu vista se agotó.
+-0.3 Precision
+MEJORAS DE COMBATE
++4 Vida
++0.1 Precision
++1 Ataque
++1 Recuperacion
+FIN DE ARCHIVO
