@@ -1,25 +1,45 @@
 INICIO DE ARCHIVO
 HABITACIONES
 10
-0 Cámara de pacificación de pacientes (INICIO)
+0  
+(INICIO)  
+Cámara de pacificación de pacientes  
 Entras y encuentras al asesino Víctor Zsasz, tallando una nueva cicatriz.
-1 Arkham Oeste (COMBATE)
+1  
+(COMBATE)  
+Arkham Oeste  
 El ala oeste está en ruinas. De entre las sombras, los presos más violentos se lanzan hacia ti, armados con tubos oxidados y odio en los ojos.
-2 Arkham Norte (COMBATE)
-El Batmóvil está siendo atacado por un grupo de reclusos. Te ven y rodean rapidamente.
-3 Arkham Este (COMBATE)
-Ves lo que parece ser un cementerio. De repente, fanáticos del Joker con máscaras salen de su escondite, riendose y blandiendo cuchillos.
-4 Penitenciaría (EVENTO)
+2  
+(COMBATE)  
+Arkham Norte  
+El Batmóvil está siendo atacado por un grupo de reclusos. Te ven y rodean rápidamente.
+3  
+(COMBATE)  
+Arkham Este  
+Ves lo que parece ser un cementerio. De repente, fanáticos del Joker con máscaras salen de su escondite, riéndose y blandiendo cuchillos.
+4  
+(EVENTO)  
+Penitenciaría  
 Las puertas de máxima seguridad están abiertas de par en par, y el silencio es más aterrador que cualquier grito. Algo (o alguien) ha dejado un rastro de huellas de sangre que conduce al nivel inferior.
-5 Centro médico (EVENTO)
+5  
+(EVENTO)  
+Centro médico  
 El olor a desinfectante no logra ocultar el aroma metálico de la sangre. Las camillas están volcadas, y entre los frascos rotos de medicamentos, encuentras un informe médico con una sola palabra escrita en rojo: "¡Huye!"
-6 Tratamiento intensivo (EVENTO)
+6  
+(EVENTO)  
+Tratamiento intensivo  
 Las luces parpadean sobre las paredes manchadas de sustancias no identificadas. Una silla de contención yace en el centro, las correas rotas y ensangrentadas. En el espejo blindado, alguien ha escrito: "NO ES SU RISA — ES EL AIRE. ¡NO RESPIRES!".
-7 Cloacas (EVENTO)
+7  
+(EVENTO)  
+Cloacas  
 El aire es denso y el agua putrefacta te llega a los tobillos. Ratas huyen de algo más grande que se mueve entre las sombras. Un susurro grave resuena en los túneles: "Te estoy esperando, murciélago..."
-8 Mansión Arkham (EVENTO)
+8  
+(EVENTO)  
+Mansión Arkham  
 La antigua residencia de la familia Arkham se alza como un espectro. Las escaleras crujen bajo tus pies, y los retratos en las paredes parecen seguirte con la mirada.
-9 Jardín Botánico (EVENTO)
+9  
+(EVENTO)  
+Jardín Botánico  
 La vegetación ha crecido salvaje, ahogando todo a su paso. Entre las enredaderas, ves flores venenosas de colores vibrantes.
 ARCOS
 9
