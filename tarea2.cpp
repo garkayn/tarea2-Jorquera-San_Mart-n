@@ -4,6 +4,19 @@ using namespace std;
 #include<fstream>
 #include<limits>
 
+struct Room {
+    string nombre;
+    string informacion;
+    Room* caminoIzquierdo;
+    Room* caminoCentral;
+    Room* caminoDerecho;
+    string tipoHabitacion;
+    int numeroNodo;
+    float evento;
+    float combate;
+};
+
+
 class Mapa {
     private:
         Room* inicio;
@@ -40,17 +53,6 @@ class Mapa {
         }
 };
 
-struct Room {
-    string nombre;
-    string informacion;
-    Room* caminoIzquierdo;
-    Room* caminoCentral;
-    Room* caminoDerecho;
-    string tipoHabitacion;
-    int numeroNodo;
-    float evento;
-    float combate;
-};
 
 struct Evento {
     string nombre;
