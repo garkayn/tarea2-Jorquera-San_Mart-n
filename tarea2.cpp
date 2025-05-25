@@ -25,15 +25,15 @@ class Mapa {
             string usable;
             int n;
             string descartable;
-            char c;
-            cout<<"holi"<<endl;
+            //char c;
                 
             getline(file, descartable); 
             getline(file, descartable); 
 
             file>>n;
-            file.get(c);
-            cout<<c;
+            cout<<n<<endl;
+            //file.get(c);
+            //cout<<c;
             Room** habitaciones = new Room*[n];
 
             
@@ -43,6 +43,7 @@ class Mapa {
                 nuevo->centro = nullptr;
                 nuevo->der = nullptr;
                 file >> nuevo->numeroNodo;
+                cout<<nuevo->numeroNodo<<endl;
                 file >> nuevo->tipoHabitacion;
                 file.ignore(1000, '\n'); //pendiente revisar bien de por que funciona esta linea, y por que se va a la shit sin esto XD
                 getline(file, nuevo->nombre);

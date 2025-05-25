@@ -1,7 +1,7 @@
 INICIO DE ARCHIVO
 HABITACIONES
-10
-0 
+27
+0
 (INICIO)
 Cámara de pacificación de pacientes
 Entras y encuentras al asesino Víctor Zsasz, tallando una nueva cicatriz.
@@ -9,25 +9,25 @@ Entras y encuentras al asesino Víctor Zsasz, tallando una nueva cicatriz.
 (COMBATE)
 Arkham Oeste
 El ala oeste está en ruinas. De entre las sombras, los presos más violentos se lanzan hacia ti, armados con tubos oxidados y odio en los ojos.
-2  
+2
 (COMBATE)  
 Arkham Norte  
 El Batmóvil está siendo atacado por un grupo de reclusos. Te ven y rodean rápidamente.
-3  
-(COMBATE)  
-Arkham Este  
+3
+(COMBATE)
+Arkham Este
 Ves lo que parece ser un cementerio. De repente, fanáticos del Joker con máscaras salen de su escondite, riéndose y blandiendo cuchillos.
-4  
-(EVENTO)  
-Penitenciaría  
+4
+(EVENTO)
+Penitenciaría
 Las puertas de máxima seguridad están abiertas de par en par, y el silencio es más aterrador que cualquier grito. Algo (o alguien) ha dejado un rastro de huellas de sangre que conduce al nivel inferior.
-5  
-(FINAL)  
+5
+(FINAL)
 Centro médico (Agregar final malo Gordon)
 El olor a desinfectante no logra ocultar el aroma metálico de la sangre. Las camillas están volcadas, y entre los frascos rotos de medicamentos, encuentras un informe médico con una sola palabra escrita en rojo: "¡Huye!"
-6  
-(EVENTO)  
-Tratamiento intensivo  
+6
+(EVENTO) 
+Tratamiento intensivo 
 Las luces parpadean sobre las paredes manchadas de sustancias no identificadas. Una silla de contención yace en el centro, las correas rotas y ensangrentadas. En el espejo blindado, alguien ha escrito: "NO ES SU RISA — ES EL AIRE. ¡NO RESPIRES!".
 7  
 (EVENTO)  
@@ -108,6 +108,7 @@ eki
 26
 (COMBATE FINAL)
 Joker
+eki
 ARCOS
 26
 0 -> 1
