@@ -26,6 +26,7 @@ class Mapa {
             int n;
             string descartable;
             char c;
+            cout<<"holi"<<endl;
                 
             getline(file, descartable); 
             getline(file, descartable); 
