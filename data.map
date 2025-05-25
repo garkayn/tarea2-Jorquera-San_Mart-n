@@ -146,10 +146,9 @@ Encuentras un refresco apetecible...
 Cantidad de opciones
 2
 A: Tomarlo
-Te mueres
+Tomas el refresco, te mueres
 B: Dejarlo
-Lo dejas pasar.
-Ninguna consecuencia.
+Lo dejas pasar, no hay ninguna consecuencia
 Paquete de Lucius Fox
 Probabilidad
 0.6
@@ -169,11 +168,9 @@ Ves una luz verde titilando en la distancia...
 Cantidad de opciones
 2
 A: Te acercas a ver que es.
-¡Se trata de un trofeo del Acertijo!
-+0.2 Sigilo
+¡Se trata de un trofeo del Acertijo! +0.2 Sigilo
 B: No le prestas atención.
-+5 daño Acertijo
--0.3 Precision
++5 daño Acertijo -0.3 precision
 ENEMIGOS 
 2
 Recluso | Vida 10 | Ataque 3 | Precision 0.6 | Probabilidad 0.5

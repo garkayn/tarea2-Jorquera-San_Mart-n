@@ -162,6 +162,8 @@ struct Evento {
     float probabilidad;
     string informacion;
     int cantidadOpciones;
+    string* opciones;
+    string* infoOpciones;
     //arreglo de strings con las opciones
 };
 
@@ -191,15 +193,14 @@ class Jugador {
         int cordura;
 };
 
-void leerEventos(fstream &file){
+Evento* leerEventos(fstream &file, int &cant_eventos){
     string descartable;
     getline(file, descartable);
-    int n;
-    file>>n;
-    cout<<n<<endl;
+    file>>cant_eventos;
+    cout<<cant_eventos<<endl;
     file.ignore(1000, '\n');
-    Evento* eventos = new Evento[n];
-    for(int i=0; i<n;i++){
+    Evento* eventos = new Evento[cant_eventos];
+    for(int i=0; i<cant_eventos;i++){
         getline(file, eventos[i].nombre);
         getline(file, descartable);
         file>>eventos[i].probabilidad;
@@ -208,7 +209,15 @@ void leerEventos(fstream &file){
         getline(file, descartable);
         file>>eventos[i].cantidadOpciones;
         file.ignore(1000, '\n');
+        eventos[i].opciones = new string[eventos[i].cantidadOpciones];
+        eventos[i].infoOpciones = new string[eventos[i].cantidadOpciones];
+        for (int j = 0; j < eventos[i].cantidadOpciones; j++) {
+            getline(file, eventos[i].opciones[j]);
+            getline(file, eventos[i].infoOpciones[j]);
+        }
     }
+
+    return eventos;
 }
 
 int main(){
@@ -216,5 +225,7 @@ int main(){
     file.open("data.map", ios::in);
     Mapa mapa;
     mapa.armarMapa(file);
-    leerEventos(file);
+    int cant_eventos;
+    Evento* eventos = leerEventos(file, cant_eventos);
+    cout<<eventos[0].opciones[0]<<endl<<eventos[0].infoOpciones[0];
 }
