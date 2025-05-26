@@ -103,7 +103,7 @@ class Mapa {
         }
 };
 
-struct Combatiente { //Investigar herencia en clases
+struct Combatiente {
     int damage;
     Combatiente* next;
 };
@@ -142,7 +142,7 @@ class ColaTurnos {
                 frente = frente->next;
                 delete temp;
                 if (frente == nullptr) {
-                    cola = nullptr;           // Si la cola quedó vacía
+                    cola = nullptr; // Si la cola quedó vacía
                 }
                 size--;
             }
@@ -164,40 +164,13 @@ struct Evento {
     int cantidadOpciones;
     string* opciones;
     string* infoOpciones;
-    //arreglo de strings con las opciones
-};
-
-class Enemigo {
-    private:
-        string nombre;
-        int vida;
-        int ataque;
-        float precision;
-        int probabilidad;
-};
-
-class Jefe {
-    private:
-        string nombre;
-        int vida;
-        int ataque;
-        float precision;
-};
-
-class Jugador {
-    private :
-        int vida;
-        int ataque;
-        float precision;
-        int recuperacion;
-        int cordura;
+    string* consecuencias;
 };
 
 Evento* leerEventos(fstream &file, int &cant_eventos){
     string descartable;
     getline(file, descartable);
     file>>cant_eventos;
-    cout<<cant_eventos<<endl;
     file.ignore(1000, '\n');
     Evento* eventos = new Evento[cant_eventos];
     for(int i=0; i<cant_eventos;i++){
@@ -211,13 +184,209 @@ Evento* leerEventos(fstream &file, int &cant_eventos){
         file.ignore(1000, '\n');
         eventos[i].opciones = new string[eventos[i].cantidadOpciones];
         eventos[i].infoOpciones = new string[eventos[i].cantidadOpciones];
+        eventos[i].consecuencias = new string[eventos[i].cantidadOpciones];
         for (int j = 0; j < eventos[i].cantidadOpciones; j++) {
             getline(file, eventos[i].opciones[j]);
             getline(file, eventos[i].infoOpciones[j]);
+            getline(file, eventos[i].consecuencias[j]);
         }
     }
-
     return eventos;
+}
+
+class Jugador {
+    private :
+        int vida;
+        int ataque;
+        float precision;
+        int cordura;
+        float sigilo;
+        int recuperacion;
+    public :
+        Jugador(){vida = 60; ataque = 5; precision = 0.8; cordura = 100; sigilo = 0.2;}
+        bool estasVivo(){
+            if(vida>0) return true;
+            return false;
+        }
+        void cambioVida(int cambio){
+            vida += cambio;
+        }
+        void cambioAtaque(int cambio){
+            ataque += cambio;
+        }
+        void cambioPresicion(int cambio){
+            precision += cambio;
+        }
+        void cambioCordura(int cambio){
+            cordura += cambio;
+        }
+        void cambioSigilo(int cambio){
+            sigilo += cambio;
+        }
+        int mostrarAtaque(){
+            return ataque;
+        }
+        int mostrarPrecision(){
+            return precision;
+        }
+        int mostrarCordura(){
+            return sigilo;
+        }
+        float mostrarSigilo(){
+            return sigilo;
+        }
+        void recibirGolpe(int damage){
+            vida -= damage;
+        }
+};
+
+
+
+struct statsEnemigos{
+    string nombre;
+    int vida;
+    int ataque;
+    float precision;
+    float probabilidad;
+};
+
+class Enemigo {
+    private:
+        string nombre;
+        int vida;
+        int ataque;
+        float precision;
+        float probabilidad;
+    public:
+        Enemigo(statsEnemigos stats){nombre = stats.nombre; vida = stats.vida; ataque = stats.ataque; precision = stats.precision; probabilidad = stats.probabilidad;}
+        string mostrarNombre(){
+            return nombre;
+        }
+        int mostrarAtaque(){
+            return ataque;
+        }
+        int mostrarPrecision(){
+            return precision;
+        }
+        int mostrarProbabilidad(){
+            return probabilidad;
+        }
+};
+
+statsEnemigos* leerEnemigos(fstream &file, int &cant_enemigos){
+    string descartable;
+    getline(file, descartable);
+    file>>cant_enemigos;
+    file.ignore(1000, '\n');
+    statsEnemigos* enemigos = new statsEnemigos[cant_enemigos];
+    for(int i=0;i<cant_enemigos;i++){
+        getline(file, enemigos[i].nombre);
+        file>>descartable;
+        file>>enemigos[i].vida;
+        file>>descartable;
+        file>>enemigos[i].ataque;
+        file>>descartable;
+        file>>enemigos[i].precision;
+        file>>descartable;
+        file>>enemigos[i].probabilidad;
+        file.ignore(1000, '\n');
+    }
+    return enemigos;
+}
+
+struct statsJefes{
+    string nombre;
+    int vida;
+    int ataque;
+    float precision;
+};
+
+class Jefe {
+    private:
+        string nombre;
+        int vida;
+        int ataque;
+        float precision;
+    public:
+        Jefe(statsJefes stats){nombre = stats.nombre; vida = stats.vida; ataque = stats.ataque; precision = stats.precision;}
+        string mostrarNombre(){
+            return nombre;
+        }
+        int mostrarAtaque(){
+            return ataque;
+        }
+        int mostrarPrecision(){
+            return precision;
+        }
+};
+
+statsJefes* leerJefes(fstream &file, int &cant_jefes){
+    string descartable;
+    getline(file, descartable);
+    file>>cant_jefes;
+    file.ignore(1000, '\n');
+    statsJefes* jefes = new statsJefes[cant_jefes];
+    for(int i=0;i<cant_jefes;i++){
+        getline(file, jefes[i].nombre);
+        file>>descartable;
+        file>>jefes[i].vida;
+        file>>descartable;
+        file>>jefes[i].ataque;
+        file>>descartable;
+        file>>jefes[i].precision;
+        file.ignore(1000, '\n');        
+    }
+    return jefes;
+}
+
+struct statsMejoras{
+    string* info;
+    int vida;
+    int ataque;
+    float precision;
+    float sigilo;
+    int recuperacion;
+};
+
+statsMejoras leerMejoras(fstream &file, int &cant_mejoras){
+    string descartable;
+    statsMejoras mejoras;
+    getline(file,descartable);
+    file>>cant_mejoras;
+    mejoras.info = new string[cant_mejoras];
+    for(int i=0;i<cant_mejoras;i++){
+        string mejora_s;
+        string informacion = "";
+        string concatenar;
+        file>>concatenar;
+        informacion += concatenar;
+        informacion += " ";
+        file>>mejora_s;
+        informacion+=mejora_s;   
+        if(concatenar == "Vida"){
+            int mejora = stoi(mejora_s);
+            mejoras.vida = mejora;    
+        }
+        else if(concatenar == "Ataque"){
+            int mejora = stoi(mejora_s);
+            mejoras.ataque = mejora;    
+        }
+        else if(concatenar == "Precision") {
+            float mejora_f = stof(mejora_s);
+            mejoras.precision = mejora_f;
+        }   
+        else if(concatenar == "Sigilo") {
+            float mejora_f = stof(mejora_s);
+            mejoras.sigilo = mejora_f;
+        }       
+        else{
+            int mejora = stoi(mejora_s);
+            mejoras.recuperacion = mejora;
+        }        
+        mejoras.info[i] = informacion;
+    }
+
+    return mejoras;
 }
 
 int main(){
@@ -226,6 +395,11 @@ int main(){
     Mapa mapa;
     mapa.armarMapa(file);
     int cant_eventos;
+    int cant_enemigos;
+    int cant_jefes;
+    int cant_mejoras;
     Evento* eventos = leerEventos(file, cant_eventos);
-    cout<<eventos[0].opciones[0]<<endl<<eventos[0].infoOpciones[0];
+    statsEnemigos* arrayStatsEnemigos = leerEnemigos(file, cant_enemigos);
+    statsJefes* arrayStatsJefes = leerJefes(file, cant_jefes);
+    statsMejoras mejoras = leerMejoras(file, cant_mejoras);
 }

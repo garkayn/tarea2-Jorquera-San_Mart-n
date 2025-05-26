@@ -3,55 +3,55 @@ HABITACIONES
 27
 0
 (COMBATE)
-Cámara de pacificación de pacientes
-Entras y encuentras al asesino Víctor Zsasz, tallando una nueva cicatriz.
+Camara de pacificación de pacientes
+Entras y encuentras al asesino Victor Zsasz, tallando una nueva cicatriz.
 1
 (COMBATE)
 Arkham Oeste
-El ala oeste está en ruinas. De entre las sombras, los presos más violentos se lanzan hacia ti, armados con tubos oxidados y odio en los ojos.
+El ala oeste esta en ruinas. De entre las sombras, los presos más violentos se lanzan hacia ti, armados con tubos oxidados y odio en los ojos.
 2
 (COMBATE)  
 Arkham Norte  
-El Batmóvil está siendo atacado por un grupo de reclusos. Te ven y rodean rápidamente.
+El Batmóvil esta siendo atacado por un grupo de reclusos. Te ven y rodean rápidamente.
 3
 (COMBATE)
 Arkham Este
-Ves lo que parece ser un cementerio. De repente, fanáticos del Joker con máscaras salen de su escondite, riéndose y blandiendo cuchillos.
+Ves lo que parece ser un cementerio. De repente, fanaticos del Joker con mascaras salen de su escondite, riendose y blandiendo cuchillos.
 4
 (EVENTO)
-Penitenciaría
-Las puertas de máxima seguridad están abiertas de par en par, y el silencio es más aterrador que cualquier grito. Algo (o alguien) ha dejado un rastro de huellas de sangre que conduce al nivel inferior.
+Penitenciaria
+Las puertas de maxima seguridad estan abiertas de par en par, y el silencio es mas aterrador que cualquier grito. Algo (o alguien) ha dejado un rastro de huellas de sangre que conduce al nivel inferior.
 5
 (FINAL)
-Centro médico (Agregar final malo Gordon)
-El olor a desinfectante no logra ocultar el aroma metálico de la sangre. Las camillas están volcadas, y entre los frascos rotos de medicamentos, encuentras un informe médico con una sola palabra escrita en rojo: "¡Huye!"
+Centro medico (Agregar final malo Gordon)
+El olor a desinfectante no logra ocultar el aroma metalico de la sangre. Las camillas estan volcadas, y entre los frascos rotos de medicamentos, encuentras un informe medico con una sola palabra escrita en rojo: "¡Huye!"
 6
 (EVENTO) 
 Tratamiento intensivo 
-Las luces parpadean sobre las paredes manchadas de sustancias no identificadas. Una silla de contención yace en el centro, las correas rotas y ensangrentadas. En el espejo blindado, alguien ha escrito: "NO ES SU RISA — ES EL AIRE. ¡NO RESPIRES!".
+Las luces parpadean sobre las paredes manchadas de sustancias no identificadas. Una silla de contencion yace en el centro, las correas rotas y ensangrentadas. En el espejo blindado, alguien ha escrito: "NO ES SU RISA — ES EL AIRE. ¡NO RESPIRES!".
 7  
 (EVENTO)  
 Entrada alcantarillado  
-El aire es denso y el agua putrefacta te llega a los tobillos. Ratas huyen de algo más grande que se mueve entre las sombras. Un susurro grave resuena en los túneles: "Te estoy esperando, murciélago..."
+El aire es denso y el agua putrefacta te llega a los tobillos. Ratas huyen de algo mas grande que se mueve entre las sombras. Un susurro grave resuena en los tuneles: "Te estoy esperando, murcielago..."
 8  
 (EVENTO)  
-Mansión Arkham  
+Mansion Arkham  
 La antigua residencia de la familia Arkham se alza como un espectro. Las escaleras crujen bajo tus pies, y los retratos en las paredes parecen seguirte con la mirada.
 9  
 (EVENTO)  
-Jardín Botánico  
-La vegetación ha crecido salvaje, ahogando todo a su paso. Entre las enredaderas, ves flores venenosas de colores vibrantes.
+Jardin Botanico  
+La vegetacion ha crecido salvaje, ahogando todo a su paso. Entre las enredaderas, ves flores venenosas de colores vibrantes.
 10
 (COMBATE)
 Celdas
 eki
 11
 (COMBATE)
-Patio Penitenciaría
+Patio Penitenciaria
 eki
 12
 (COMBATE)
-Cámara de pacificación de pacientes
+Camara de pacificacion de pacientes
 eki
 13
 (COMBATE)
@@ -146,20 +146,25 @@ Encuentras un refresco apetecible...
 Cantidad de opciones
 2
 A: Tomarlo
-Tomas el refresco, te mueres
+Tomas el refresco
+te mueres
 B: Dejarlo
-Lo dejas pasar, no hay ninguna consecuencia
+Lo dejas pasar 
+no hay ninguna consecuencia
 Paquete de Lucius Fox
 Probabilidad
 0.6
-Lucius Fox te envía la herramienta...
+Lucius Fox te envia la herramienta...
 Cantidad de opciones
 3
 A: Batarangs explosivos
+Recoges los batarangs explosivos
 +10 ataque
 B: Armadura de kevlar
+Recoges la armadura de kevlar
 +5 Vida
-C: Lentes de visión nocturna
+C: Lentes de vision nocturna
+Recoges los lentes de vision nocturna
 +0.3 Precision
 Destello verde
 Probabilidad
@@ -168,26 +173,40 @@ Ves una luz verde titilando en la distancia...
 Cantidad de opciones
 2
 A: Te acercas a ver que es.
-¡Se trata de un trofeo del Acertijo! +0.2 Sigilo
-B: No le prestas atención.
-+5 daño Acertijo -0.3 precision
+¡Se trata de un trofeo del Acertijo!
++0.2 Sigilo
+B: No le prestas atencion.
+Pasas de la luz
++5 daño Acertijo
 ENEMIGOS 
-2
-Recluso | Vida 10 | Ataque 3 | Precision 0.6 | Probabilidad 0.5
-Matón del Joker | Vida 15 | Ataque 5 | Precision 0.5 | Probabilidad 0.3
-Titan | Vida 30 | Ataque 10 | Precision 0.2 | Probabilidad 0.2
+3
+Recluso
+Vida 10 Ataque 3 Precision 0.6 Probabilidad 0.5
+Maton del Joker
+Vida 15 Ataque 5 Precision 0.5 Probabilidad 0.3
+Titan
+Vida 30 Ataque 10 Precision 0.2 Probabilidad 0.2
 JEFES
 7
-Bane | Vida 50 | Ataque 20 | Precision 0.5
-Harley Quinn | Vida 25 | Ataque 8 | Precision 0.9
-Cocodrilo Asesino | Vida 40 | Ataque 15 | Precision 0.7
-Espantapajaros | Vida 20 | Ataque 4 | Precision 0.5
-El Acertijo | Vida 10 | Ataque 2 | Precision 1
-Hiedra Venenosa | Vida 30 | Ataque 10 | Precision 0.6
-Joker | Vida 15 | Ataque 6 | Precision 0.9
+Bane
+Vida 50 Ataque 20 Precision 0.5
+Harley Quinn
+Vida 25 Ataque 8 Precision 0.9
+Cocodrilo Asesino
+Vida 40 Ataque 15 Precision 0.7
+Espantapajaros
+Vida 20 Ataque 4 Precision 0.5
+El Acertijo 
+Vida 10 Ataque 2 Precision 1
+Hiedra Venenosa 
+Vida 30 Ataque 10 Precision 0.6
+Joker 
+Vida 15 Ataque 6 Precision 0.9
 MEJORAS DE COMBATE
-+4 Vida
-+0.1 Precision
-+1 Ataque
-+1 Recuperacion
+5
+Vida 4
+Precision 0.1
+Ataque 1
+Recuperacion 1
+Sigilo 0.1
 FIN DE ARCHIVO
