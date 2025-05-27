@@ -2,6 +2,117 @@ using namespace std;
 #include <iostream>
 #include <string>
 #include<fstream>
+#include<random>
+
+int aleatorioEntero(int min, int max) {
+    static random_device rd;
+    static mt19937 gen(rd());
+    uniform_int_distribution<> dist(min, max);
+    return dist(gen);
+}
+
+int enteroConProbabilidad(int min, int max, double* pesos) {
+    static random_device rd;
+    static mt19937 gen(rd());
+
+    int cantidad = max - min + 1;
+
+    // Crear distribución con los pesos dados
+    discrete_distribution<> dist(pesos, pesos + cantidad);
+
+    // Elegir índice aleatorio según los pesos
+    int indice = dist(gen);
+
+    // Mapear al valor correspondiente
+    return min + indice;
+}
+
+class Jugador {
+    private :
+        int vida;
+        int ataque;
+        float precision;
+        int cordura;
+        float sigilo;
+        int recuperacion;
+    public :
+        Jugador(){vida = 60; ataque = 5; precision = 0.8; cordura = 100; sigilo = 0.2;}
+        bool estasVivo(){
+            if(vida>0) return true;
+            return false;
+        }
+        void cambioVida(int cambio){
+            vida += cambio;
+        }
+        void cambioAtaque(int cambio){
+            ataque += cambio;
+        }
+        void cambioPresicion(int cambio){
+            precision += cambio;
+        }
+        void cambioCordura(int cambio){
+            cordura += cambio;
+        }
+        void cambioSigilo(int cambio){
+            sigilo += cambio;
+        }
+        int mostrarAtaque(){
+            return ataque;
+        }
+        int mostrarPrecision(){
+            return precision;
+        }
+        int mostrarCordura(){
+            return sigilo;
+        }
+        float mostrarSigilo(){
+            return sigilo;
+        }
+        void recibirGolpe(int damage){
+            vida -= damage;
+        }
+        void matarJugador(){
+            vida = 0;
+        }
+};
+
+
+struct Evento {
+    string nombre;
+    double probabilidad;
+    string informacion;
+    int cantidadOpciones;
+    string* opciones;
+    string* infoOpciones;
+    string* consecuencias;
+};
+
+Evento* leerEventos(fstream &file, int &cant_eventos){
+    string descartable;
+    getline(file, descartable);
+    file>>cant_eventos;
+    file.ignore(1000, '\n');
+    Evento* eventos = new Evento[cant_eventos];
+    for(int i=0; i<cant_eventos;i++){
+        getline(file, eventos[i].nombre);
+        getline(file, descartable);
+        file>>eventos[i].probabilidad;
+        file.ignore(1000, '\n');
+        getline(file, eventos[i].informacion);
+        getline(file, descartable);
+        file>>eventos[i].cantidadOpciones;
+        file.ignore(1000, '\n');
+        eventos[i].opciones = new string[eventos[i].cantidadOpciones];
+        eventos[i].infoOpciones = new string[eventos[i].cantidadOpciones];
+        eventos[i].consecuencias = new string[eventos[i].cantidadOpciones];
+        for (int j = 0; j < eventos[i].cantidadOpciones; j++) {
+            getline(file, eventos[i].opciones[j]);
+            getline(file, eventos[i].infoOpciones[j]);
+            getline(file, eventos[i].consecuencias[j]);
+        }
+    }
+    return eventos;
+}
 
 struct Room {
     string nombre;
@@ -11,8 +122,6 @@ struct Room {
     Room* der;
     string tipoHabitacion;
     int numeroNodo;
-    bool evento;
-    bool combate;
 };
 
 class Mapa {
@@ -20,7 +129,10 @@ class Mapa {
         Room* inicio;
         Room* actual;
         int numeroHabitaciones;
+        Evento* eventos;
+        int cantidadEventos;
     public:
+        Mapa(){inicio = nullptr; actual = nullptr; numeroHabitaciones = 0; eventos = nullptr;}
         void armarMapa(fstream &file){
             int n;
             string descartable;
@@ -84,21 +196,83 @@ class Mapa {
             cout<<actual->nombre<<endl;
         }
 
-        void procesarNodo(){
+        void recibirEventos(Evento* arrayEventos, int n){
+            eventos = arrayEventos;
+            cantidadEventos = n;
+        }
+
+        void procesarNodo(Jugador &jugador){
             if(actual->tipoHabitacion == "(COMBATE)"){
-                cout<<"comboijueperra"<<endl;
+                cout<<"-- "<<actual->nombre<<" --"<<endl;
+                cout<<actual->informacion<<endl;
+                //hacer el combate y el return depende del resultado del combate
             }
-            if(actual->tipoHabitacion == "(COMBATE FINAL)"){
-                cout<<"SE FINO EL COMPARE"<<endl;
+            if(actual->tipoHabitacion == "(COMBATE_FINAL)"){
+                cout<<"-- "<<actual->nombre<<" --"<<endl;
+                cout<<actual->informacion<<endl;
+                //hacer el combate y el return depende del resultado combate
             }
             if(actual->tipoHabitacion == "(FINAL)"){
-                cout<<"wea triste :("<<endl;
+                cout<<"-- "<<actual->nombre<<" --"<<endl;
+                cout<<actual->informacion<<endl;
+                jugador.matarJugador();
             }
             if(actual->tipoHabitacion == "(MINIJUEGO)"){
-                cout<<"corre perra correeeee"<<endl;
+                cout<<"-- "<<actual->nombre<<" --"<<endl;
+                cout<<actual->informacion<<endl;
+                //hacer funcion minijuego
             }
             if(actual->tipoHabitacion == "(EVENTO)"){
-                cout<<"Nicki Nicole siono"<<endl;
+                cout<<"-- "<<actual->nombre<<" --"<<endl;
+                cout<<actual->informacion<<endl;
+
+                double* pesos = new double[cantidadEventos];
+                for(int i=0; i<cantidadEventos;i++){
+                    pesos[i] = eventos[i].probabilidad;
+                }
+                int evento = enteroConProbabilidad(0, cantidadEventos - 1, pesos);
+                
+                cout<<eventos[evento].nombre<<endl<<eventos[evento].informacion<<endl;
+                for(int j=0; j<eventos[evento].cantidadOpciones; j++){
+                    cout<<eventos[evento].opciones[j]<<endl;
+                }
+                
+                int opcion;
+                char opcionElegida;
+                cout<<"Que deseas hacer? (Elija SOLO entre las opciones disponibles y en mayusculas :3) "<<endl;cin>>opcionElegida;
+                if(opcionElegida=='A'){
+                    opcion=0;
+                }
+                if(opcionElegida=='B'){
+                    opcion=1;
+                }
+                if(opcionElegida=='C'){
+                    opcion=2;
+                }
+                cout<<eventos[evento].infoOpciones[opcion]<<endl;
+                cout<<eventos[evento].consecuencias[opcion]<<endl;
+            }
+            if (jugador.estasVivo() && (actual->centro != nullptr || actual->der != nullptr)) {
+                int eleccionJugador;
+                cout<<"A donde quieres ir?"<<endl;
+                if (actual->izq != nullptr) {
+                    cout<<"1. "<<actual->izq->nombre<<endl;
+                } if (actual->centro != nullptr) {
+                    cout<<"2. "<<actual->centro->nombre<<endl;                
+                } if (actual->der !=nullptr){
+                    cout<<"3. "<<actual->der->nombre<<endl;                     
+                }
+                cin>>eleccionJugador;
+                if (eleccionJugador == 1) {
+                    actual = actual->izq;
+                } else if (eleccionJugador == 2) {
+                    actual = actual->centro;               
+                } else if (eleccionJugador == 3){
+                    actual = actual->der;                     
+                }   
+            } 
+            else {
+                actual = actual->izq;
             }
         }
 };
@@ -156,90 +330,6 @@ class ColaTurnos {
             return size;
         }
 };
-
-struct Evento {
-    string nombre;
-    float probabilidad;
-    string informacion;
-    int cantidadOpciones;
-    string* opciones;
-    string* infoOpciones;
-    string* consecuencias;
-};
-
-Evento* leerEventos(fstream &file, int &cant_eventos){
-    string descartable;
-    getline(file, descartable);
-    file>>cant_eventos;
-    file.ignore(1000, '\n');
-    Evento* eventos = new Evento[cant_eventos];
-    for(int i=0; i<cant_eventos;i++){
-        getline(file, eventos[i].nombre);
-        getline(file, descartable);
-        file>>eventos[i].probabilidad;
-        file.ignore(1000, '\n');
-        getline(file, eventos[i].informacion);
-        getline(file, descartable);
-        file>>eventos[i].cantidadOpciones;
-        file.ignore(1000, '\n');
-        eventos[i].opciones = new string[eventos[i].cantidadOpciones];
-        eventos[i].infoOpciones = new string[eventos[i].cantidadOpciones];
-        eventos[i].consecuencias = new string[eventos[i].cantidadOpciones];
-        for (int j = 0; j < eventos[i].cantidadOpciones; j++) {
-            getline(file, eventos[i].opciones[j]);
-            getline(file, eventos[i].infoOpciones[j]);
-            getline(file, eventos[i].consecuencias[j]);
-        }
-    }
-    return eventos;
-}
-
-class Jugador {
-    private :
-        int vida;
-        int ataque;
-        float precision;
-        int cordura;
-        float sigilo;
-        int recuperacion;
-    public :
-        Jugador(){vida = 60; ataque = 5; precision = 0.8; cordura = 100; sigilo = 0.2;}
-        bool estasVivo(){
-            if(vida>0) return true;
-            return false;
-        }
-        void cambioVida(int cambio){
-            vida += cambio;
-        }
-        void cambioAtaque(int cambio){
-            ataque += cambio;
-        }
-        void cambioPresicion(int cambio){
-            precision += cambio;
-        }
-        void cambioCordura(int cambio){
-            cordura += cambio;
-        }
-        void cambioSigilo(int cambio){
-            sigilo += cambio;
-        }
-        int mostrarAtaque(){
-            return ataque;
-        }
-        int mostrarPrecision(){
-            return precision;
-        }
-        int mostrarCordura(){
-            return sigilo;
-        }
-        float mostrarSigilo(){
-            return sigilo;
-        }
-        void recibirGolpe(int damage){
-            vida -= damage;
-        }
-};
-
 
 
 struct statsEnemigos{
@@ -391,15 +481,26 @@ statsMejoras leerMejoras(fstream &file, int &cant_mejoras){
 
 int main(){
     fstream file;
+    Jugador Batman;
     file.open("data.map", ios::in);
     Mapa mapa;
     mapa.armarMapa(file);
     int cant_eventos;
+    Evento* eventos = leerEventos(file, cant_eventos);
+    mapa.recibirEventos(eventos, cant_eventos);
     int cant_enemigos;
     int cant_jefes;
     int cant_mejoras;
-    Evento* eventos = leerEventos(file, cant_eventos);
     statsEnemigos* arrayStatsEnemigos = leerEnemigos(file, cant_enemigos);
     statsJefes* arrayStatsJefes = leerJefes(file, cant_jefes);
     statsMejoras mejoras = leerMejoras(file, cant_mejoras);
+    //cout introducción
+    //cout primeros caminos
+    while(Batman.estasVivo()){
+        mapa.procesarNodo(Batman);
+        if (Batman.estasVivo() == false) {
+            cout<<"YOU DIED";
+            break;
+        }
+    }
 }
