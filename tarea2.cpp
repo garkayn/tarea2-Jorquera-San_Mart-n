@@ -27,6 +27,7 @@ int enteroConProbabilidad(int min, int max, double* pesos) {
     return min + indice;
 }
 
+
 class Jugador {
     private :
         int vida;
@@ -56,6 +57,9 @@ class Jugador {
         void cambioSigilo(int cambio){
             sigilo += cambio;
         }
+        int mostrarVida(){
+            return vida;
+        }
         int mostrarAtaque(){
             return ataque;
         }
@@ -76,6 +80,233 @@ class Jugador {
         }
 };
 
+struct statsEnemigos{
+    string nombre;
+    int vida;
+    int ataque;
+    float precision;
+    float probabilidad;
+};
+
+class Enemigo {
+    private:
+        string nombre;
+        int vida;
+        int ataque;
+        float precision;
+        double probabilidad;
+    public:
+        Enemigo(){nombre = ""; vida = 0; ataque = 0; precision = 0; probabilidad = 0;}
+        void recibirNombre(string asignacion){
+            nombre = asignacion;
+        }
+        void recibirVida(int asignacion){
+            vida = asignacion;
+        }
+        void recibirAtaque(int asignacion){
+            ataque = asignacion;
+        }
+        void recibirPrecision(float asignacion){
+            precision = asignacion;
+        }
+        void recibirProbabilidad(double asignacion){
+            probabilidad = asignacion;
+        }
+        string mostrarNombre(){
+            return nombre;
+        }
+        int mostrarVida(){
+            return vida;
+        }
+        int mostrarAtaque(){
+            return ataque;
+        }
+        float mostrarPrecision(){
+            return precision;
+        }
+        double mostrarProbabilidad(){
+            return probabilidad;
+        }     
+        void perderVida(int dmg){
+            vida = vida - dmg;
+        }
+        bool estaVivo(){
+            return vida>0;
+        }
+    };
+
+Enemigo* procesarEnemigos(statsEnemigos* array, int cantidad){
+    Enemigo* enemigos = new Enemigo[cantidad];
+    for(int i = 0; i<cantidad ; i++){
+        enemigos[i].recibirNombre(array[i].nombre);
+        enemigos[i].recibirVida(array[i].vida);
+        enemigos[i].recibirAtaque(array[i].ataque);
+        enemigos[i].recibirPrecision(array[i].precision);
+        enemigos[i].recibirProbabilidad(array[i].probabilidad);
+    
+    }
+    // borrar array dinamico
+    return enemigos;
+
+}
+
+statsEnemigos* leerEnemigos(fstream &file, int &cant_enemigos){
+    string descartable;
+    getline(file, descartable);
+    file>>cant_enemigos;
+    file.ignore(1000, '\n');
+    statsEnemigos* enemigos = new statsEnemigos[cant_enemigos];
+    for(int i=0;i<cant_enemigos;i++){
+        getline(file, enemigos[i].nombre);
+        file>>descartable;
+        file>>enemigos[i].vida;
+        file>>descartable;
+        file>>enemigos[i].ataque;
+        file>>descartable;
+        file>>enemigos[i].precision;
+        file>>descartable;
+        file>>enemigos[i].probabilidad;
+        file.ignore(1000, '\n');
+    }
+    return enemigos;
+}
+
+struct combatiente {
+    int damage;
+    combatiente* next;
+};
+
+class colaCombate {
+    private:
+        combatiente* frente;
+        combatiente* cola;
+        int size;
+    public:
+        colaCombate() : frente(nullptr), cola(nullptr), size(0) {}
+
+        ~colaCombate() {
+            while (frente != nullptr) {
+                pasarTurno();
+            }
+        }
+
+        void agregarCombatiente(int dmg) {   
+            combatiente* nuevo = new combatiente;
+            nuevo->damage = dmg;
+            nuevo->next = nullptr;       
+            if (frente == nullptr) {    
+                frente = nuevo;
+                cola = frente;
+            }
+            else {
+                cola->next = nuevo;
+                cola = nuevo;
+            }          
+            size++;
+            nuevo->next = nullptr; // Asegura que el nuevo nodo apunte a nullptr          
+        }
+
+        void pasarTurno() {
+            if (frente != nullptr) {
+                combatiente* temp = frente;
+                frente = frente->next;
+                delete temp;
+                if (frente == nullptr) {
+                    cola = nullptr; // Si la cola quedó vacía
+                }
+                size--;
+            }
+        }
+
+        int frontValue() {
+            if (frente == nullptr) {
+                return -1;  
+            }
+            return frente->damage;
+        }
+
+        bool isEmpty() {
+            return frente == nullptr;
+        }
+
+        int getSize() {
+            return size;
+        }
+};
+
+void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
+    int cantidadEnemigos = aleatorioEntero(1,3); //esto viene dado por defecto
+    Enemigo* combatientes = new Enemigo[cantidadEnemigos];
+    double* pesos = new double[enemigosTotales];
+    for(int i = 0; i<enemigosTotales; i++){
+        pesos[i] = enemigos[i].mostrarProbabilidad();
+    }
+    for(int j = 0; j<cantidadEnemigos; j++){
+        int seleccionadorEnemigo = enteroConProbabilidad(0,enemigosTotales-1,pesos);
+        combatientes[j] = enemigos[seleccionadorEnemigo];
+        cout<<combatientes[j].mostrarNombre()<<endl;
+    }
+    cout<<"Quieres entrar con sigilo? "<<endl<<"SI o NO"<<endl;
+    string respuesta;
+    cin>>respuesta;
+    if(respuesta == "SI"){
+        cout<<"Decides entrar de manera sigilosa, y alcanzas a dañar a varios enemigos"<<endl;
+        for(int j=0; j<cantidadEnemigos; j++){
+            combatientes[j].recibirAtaque(jugador.mostrarAtaque()*(jugador.mostrarSigilo() + 1));
+            jugador.cambioCordura(2);
+        }
+    }
+    else{
+        cout<<"Decides entrar a lo bruto"<<endl;
+        jugador.cambioCordura(-2);
+    }
+    colaCombate turnos;
+    turnos.agregarCombatiente(jugador.mostrarAtaque()); 
+    for(int i=0; i<cantidadEnemigos ; i++){
+        if(combatientes[i].estaVivo()){
+            turnos.agregarCombatiente(combatientes[i].mostrarAtaque());  
+        }   
+    }
+
+    while(jugador.estasVivo() && turnos.getSize()>1){
+        cout<<"A que enemigo quieres atacar?"<<endl;
+        for(int i=0; i<cantidadEnemigos ; i++){
+            if(combatientes[i].estaVivo()){
+                cout<<i+1<<". "<<combatientes[i].mostrarNombre()<<"  VIDA: "<<combatientes[i].mostrarVida()<<endl;
+            }   
+        }
+        int objetivo;
+        cin>>objetivo;
+        objetivo--;
+        combatientes[objetivo].perderVida(turnos.frontValue()); 
+        turnos.pasarTurno();  
+        cout<<"ELIGES A "<<objetivo+1<<" LE HACES "<<jugador.mostrarAtaque()<<" DE DANIO Y LE BAJAS A "<<combatientes[objetivo].mostrarVida()<<" DE VIDA "<<endl;
+        for(int i=0; i<cantidadEnemigos ; i++){
+            if(combatientes[i].estaVivo()){
+                cout<<"TAMANIO DE LA COLA: "<<turnos.getSize()<<endl;
+                jugador.cambioVida(-turnos.frontValue());
+                cout<<"TE HICIERON "<<turnos.frontValue()<<" DE DANIO, AHORA TIENES "<<jugador.mostrarVida()<<" DE VIDA."<<endl;
+                turnos.pasarTurno(); 
+            }
+            else if(!combatientes[i].estaVivo() && combatientes[i].mostrarAtaque() == turnos.frontValue()){ //anadir un identificador mas fuerte que el danio del pj
+                turnos.pasarTurno();
+            }
+        }
+        
+        cout<<"TAMANIO DE LA COLA: "<<turnos.getSize()<<endl;
+
+        turnos.agregarCombatiente(jugador.mostrarAtaque());
+        for(int i=0; i<cantidadEnemigos ; i++){
+            if(combatientes[i].estaVivo()){
+                turnos.agregarCombatiente(combatientes[i].mostrarAtaque());
+            }
+                
+        }
+        cout<<"TAMANIO DE LA COLA 2: "<<turnos.getSize()<<endl;
+    }
+
+    turnos.~colaCombate();
+}
 
 struct Evento {
     string nombre;
@@ -117,6 +348,7 @@ Evento* leerEventos(fstream &file, int &cant_eventos){
 struct Room {
     string nombre;
     string informacion;
+    string mensajeFinal;
     Room* izq;
     Room* centro;
     Room* der;
@@ -155,6 +387,9 @@ class Mapa {
                 file.ignore(1000, '\n'); //pendiente revisar bien de por que funciona esta linea, y por que se va a la shit sin esto XD
                 getline(file, nuevo->nombre);
                 getline(file, nuevo->informacion);
+                if(nuevo->tipoHabitacion == "(COMBATE_FINAL)"){
+                    getline(file, nuevo->mensajeFinal);
+                }
                 habitaciones[i] = nuevo;
             }
             //ahora procedemos a leer los enlaces
@@ -201,15 +436,17 @@ class Mapa {
             cantidadEventos = n;
         }
 
-        void procesarNodo(Jugador &jugador){
+        void procesarNodo(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
             if(actual->tipoHabitacion == "(COMBATE)"){
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
                 cout<<actual->informacion<<endl;
+                combate(jugador,enemigos,enemigosTotales);
                 //hacer el combate y el return depende del resultado del combate
             }
             if(actual->tipoHabitacion == "(COMBATE_FINAL)"){
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
                 cout<<actual->informacion<<endl;
+                cout<<actual->mensajeFinal<<endl;
                 //hacer el combate y el return depende del resultado combate
             }
             if(actual->tipoHabitacion == "(FINAL)"){
@@ -276,113 +513,6 @@ class Mapa {
             }
         }
 };
-
-struct Combatiente {
-    int damage;
-    Combatiente* next;
-};
-
-class ColaTurnos {
-    private:
-        Combatiente* frente;
-        Combatiente* cola;
-        int size;
-    public:
-        ColaTurnos() : frente(nullptr), cola(nullptr), size(0) {}
-
-        ~ColaTurnos() {
-            while (frente != nullptr) {
-                pasarTurno();
-            }
-        }
-
-        void agregarCombatiente(int dmg) {   
-            Combatiente* nuevo = new Combatiente{dmg, nullptr};       
-            if (frente == nullptr) {    
-                frente = nuevo;
-                cola = frente;
-            }
-            else {
-                cola->next = nuevo;
-                cola = nuevo;
-            }          
-            size++;
-            nuevo->next = nullptr; // Asegura que el nuevo nodo apunte a nullptr          
-        }
-
-        void pasarTurno() {
-            if (frente != nullptr) {
-                Combatiente* temp = frente;
-                frente = frente->next;
-                delete temp;
-                if (frente == nullptr) {
-                    cola = nullptr; // Si la cola quedó vacía
-                }
-                size--;
-            }
-        }
-
-        bool isEmpty() const {
-            return frente == nullptr;
-        }
-
-        int getSize() const {
-            return size;
-        }
-};
-
-
-struct statsEnemigos{
-    string nombre;
-    int vida;
-    int ataque;
-    float precision;
-    float probabilidad;
-};
-
-class Enemigo {
-    private:
-        string nombre;
-        int vida;
-        int ataque;
-        float precision;
-        float probabilidad;
-    public:
-        Enemigo(statsEnemigos stats){nombre = stats.nombre; vida = stats.vida; ataque = stats.ataque; precision = stats.precision; probabilidad = stats.probabilidad;}
-        string mostrarNombre(){
-            return nombre;
-        }
-        int mostrarAtaque(){
-            return ataque;
-        }
-        int mostrarPrecision(){
-            return precision;
-        }
-        int mostrarProbabilidad(){
-            return probabilidad;
-        }
-};
-
-statsEnemigos* leerEnemigos(fstream &file, int &cant_enemigos){
-    string descartable;
-    getline(file, descartable);
-    file>>cant_enemigos;
-    file.ignore(1000, '\n');
-    statsEnemigos* enemigos = new statsEnemigos[cant_enemigos];
-    for(int i=0;i<cant_enemigos;i++){
-        getline(file, enemigos[i].nombre);
-        file>>descartable;
-        file>>enemigos[i].vida;
-        file>>descartable;
-        file>>enemigos[i].ataque;
-        file>>descartable;
-        file>>enemigos[i].precision;
-        file>>descartable;
-        file>>enemigos[i].probabilidad;
-        file.ignore(1000, '\n');
-    }
-    return enemigos;
-}
 
 struct statsJefes{
     string nombre;
@@ -494,10 +624,12 @@ int main(){
     statsEnemigos* arrayStatsEnemigos = leerEnemigos(file, cant_enemigos);
     statsJefes* arrayStatsJefes = leerJefes(file, cant_jefes);
     statsMejoras mejoras = leerMejoras(file, cant_mejoras);
+    cout<<"HOLAAAAAAAAA"<<endl;
+    Enemigo* enemigos = procesarEnemigos(arrayStatsEnemigos, cant_enemigos);
     //cout introducción
     //cout primeros caminos
     while(Batman.estasVivo()){
-        mapa.procesarNodo(Batman);
+        mapa.procesarNodo(Batman, enemigos, cant_enemigos);
         if (Batman.estasVivo() == false) {
             cout<<"YOU DIED";
             break;

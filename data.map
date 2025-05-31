@@ -74,17 +74,20 @@ eki
 Piso inferior Biblioteca
 eki
 18
-(COMBATE FINAL)
+(COMBATE_FINAL)
 Centro de investigación botanica
 eki
+Holi
 19
-(COMBATE FINAL)
+(COMBATE_FINAL)
 Subterraneo
 eki
+Holi
 20
-(COMBATE FINAL)
+(COMBATE_FINAL)
 Subterraneo
 eki
+Holi
 21
 (COMBATE)
 Harley
@@ -105,10 +108,12 @@ eki
 (COMBATE_FINAL)
 Joker
 eki
+Holi
 26
 (COMBATE_FINAL)
 Joker
 eki
+Holi
 ARCOS
 26
 0 -> 1
