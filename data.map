@@ -4,7 +4,7 @@ HABITACIONES
 0
 (COMBATE)
 Camara de pacificación de pacientes
-Entras y encuentras al asesino Victor Zsasz, tallando una nueva cicatriz.
+Luego del inesperado escape del Joker, te rodean unos secuaces con toda la pinta de querer acabar contigo, debes enfrentarte a ellos.
 1
 (COMBATE)
 Arkham Oeste
@@ -23,8 +23,8 @@ Penitenciaria
 Las puertas de maxima seguridad estan abiertas de par en par, y el silencio es mas aterrador que cualquier grito. Algo (o alguien) ha dejado un rastro de huellas de sangre que conduce al nivel inferior.
 5
 (FINAL)
-Centro medico (Agregar final malo Gordon)
-El olor a desinfectante no logra ocultar el aroma metalico de la sangre. Las camillas estan volcadas, y entre los frascos rotos de medicamentos, encuentras un informe medico con una sola palabra escrita en rojo: "¡Huye!"
+Centro medico
+La voz distorsionada de Harley Quinn resuena en los pasillos del centro médico, burlona, cruel, inconfundible. A lo lejos ves lo que parece ser la figura de Gordon atada a una silla, corres a toda velocidad a salvarlo, empujas la puerta... y te detienes en seco, no es Gordon, es un muñeco con una sonrisa pintada de oreja a oreja. De repente las luces parpadean y el sistema de seguridad se activa, todas las puertas del centro medico se cierran con un estruendo metalico como campanas de un funeral, te han atrapado para siempre, Gotham esta sola, el mundo padece sin su justiciero, mientras la risa de Harley se mezcla con la estatica del comunicador, solo queda imaginar los horrores por venir.
 6
 (EVENTO) 
 Tratamiento intensivo 
@@ -43,20 +43,20 @@ Jardin Botanico
 La vegetacion ha crecido salvaje, ahogando todo a su paso. Entre las enredaderas, ves flores venenosas de colores vibrantes.
 10
 (COMBATE)
-Celdas
-eki
+Celdas de la Penitenciaria
+Bienvenido a las celdas. El Joker te preparo un recibimiento... personal.
 11
 (COMBATE)
 Patio Penitenciaria
-eki
+El patio esta desierto... hasta que das un paso, entonces el silencio se rompe y entiendes que nunca estuviste solo.
 12
 (COMBATE)
 Camara de pacificacion de pacientes
-eki
+Las paredes acolchadas no evitaron la violencia, solo la disfrazaron, el aire se siente denso y hay unos cuantos antisociales que quieren que tu seas el siguiente.
 13
 (COMBATE)
 Celdas de alta seguridad
-eki
+Aqui encerraron a los peores, o lo intentaron, las cerraduras fallan y solo esuchas respiraciones contenidas, sea lo que sea que rompio el silencio, ya te estan buscando.
 14
 (COMBATE_FINAL)
 Cloacas

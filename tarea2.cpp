@@ -1,9 +1,26 @@
-using namespace std;
 #include<iostream>
 #include<string>
 #include<fstream>
 #include<random>
 
+using namespace std;
+
+// =============================================
+// Sección 1: Funciones de Utilidad Aleatoria
+// =============================================
+
+/*****
+* int aleatorioEntero
+******
+* Genera un número entero aleatorio entre un mínimo y un máximo (ambos incluidos).
+******
+* Input:
+* int min : valor mínimo del rango
+* int max : valor máximo del rango
+******
+* Returns:
+* int , número entero aleatorio en el rango [min, max]
+*****/
 int aleatorioEntero(int min, int max) {
     static random_device rd;
     static mt19937 gen(rd());
@@ -11,22 +28,45 @@ int aleatorioEntero(int min, int max) {
     return dist(gen);
 }
 
+
+/*****
+* int enteroConProbabilidad
+******
+* Genera un número entero aleatorio entre min y max (ambos incluidos),
+* utilizando una distribución basada en los pesos proporcionados.
+******
+* Input:
+* int min : valor mínimo del rango
+* int max : valor máximo del rango
+* double* pesos : arreglo de pesos asociados a cada valor en el rango [min, max]
+******
+* Returns:
+* int , número entero aleatorio en el rango [min, max], elegido según la distribución de pesos
+*****/
 int enteroConProbabilidad(int min, int max, double* pesos) {
     static random_device rd;
     static mt19937 gen(rd());
 
     int cantidad = max - min + 1;
 
-    // Crear distribución con los pesos dados
     discrete_distribution<> dist(pesos, pesos + cantidad);
 
-    // Elegir índice aleatorio según los pesos
     int indice = dist(gen);
 
-    // Mapear al valor correspondiente
     return min + indice;
 }
 
+/*****
+* bool aciertaAtaque
+******
+* Determina si un ataque acierta en función de una probabilidad dada.
+******
+* Input:
+* double probabilidad : valor entre 0.0 y 1.0 que representa la probabilidad de acierto
+******
+* Returns:
+* bool , true si el ataque acierta, false si falla
+*****/
 bool aciertaAtaque(double probabilidad) {
     static random_device rd;
     static mt19937 gen(rd());
@@ -35,7 +75,9 @@ bool aciertaAtaque(double probabilidad) {
     return dist(gen) < probabilidad;
 }
 
-
+// =============================================
+// Sección 2: Clase Personaje jugable
+// =============================================
 class Jugador {
     private :
         int vida;
@@ -46,10 +88,7 @@ class Jugador {
         int recuperacion;
     public :
         Jugador(){vida = 60; ataque = 5; precision = 0.8; cordura = 6; sigilo = 0.2; recuperacion = 5;}
-        bool estasVivo(){
-            if(vida>0) return true;
-            return false;
-        }
+        // Métodos de modificación
         void cambioVida(int cambio){
             vida += cambio;
         }
@@ -68,6 +107,11 @@ class Jugador {
         void cambioRecuperacion(int cambio){
             recuperacion += cambio;
         }
+        void matarJugador(){
+            vida = 0;
+        }
+
+        // Métodos para retornar estado
         int mostrarVida(){
             return vida;
         }
@@ -86,14 +130,14 @@ class Jugador {
         int mostrarRecuperacion(){
             return recuperacion;
         }
-        void recibirGolpe(int damage){
-            vida -= damage;
-        }
-        void matarJugador(){
-            vida = 0;
+        bool estaVivo(){
+            return vida > 0;
         }
 };
 
+// =============================================
+// Sección 3: Enemigos
+// =============================================
 struct statsEnemigos{
     string nombre;
     int vida;
@@ -111,6 +155,8 @@ class Enemigo {
         double probabilidad;
     public:
         Enemigo(){nombre = ""; vida = 0; ataque = 0; precision = 0; probabilidad = 0;}
+
+        // Métodos de asignación
         void recibirNombre(string asignacion){
             nombre = asignacion;
         }
@@ -126,6 +172,16 @@ class Enemigo {
         void recibirAtaque(int asignacion){
             ataque = asignacion;
         }
+
+        // Métodos de modificación
+        void perderVida(int dmg){
+            vida -= dmg;
+        }
+        void perderPrecision(double asignacion){
+            precision -= asignacion;
+        }
+
+        // Métodos para retornar estado
         string mostrarNombre(){
             return nombre;
         }
@@ -141,40 +197,35 @@ class Enemigo {
         double mostrarProbabilidad(){
             return probabilidad;
         }     
-        void perderVida(int dmg){
-            vida -= dmg;
-        }
-        void perderPrecision(double asignacion){
-            precision -= asignacion;
-        }
         bool estaVivo(){
-            return vida>0;
+            return vida > 0;
         }
     };
 
-Enemigo* procesarEnemigos(statsEnemigos* array, int cantidad){
-    Enemigo* enemigos = new Enemigo[cantidad];
-    for(int i = 0; i<cantidad ; i++){
-        enemigos[i].recibirNombre(array[i].nombre);
-        enemigos[i].recibirVida(array[i].vida);
-        enemigos[i].recibirAtaque(array[i].ataque);
-        enemigos[i].recibirPrecision(array[i].precision);
-        enemigos[i].recibirProbabilidad(array[i].probabilidad);
-    
-    }
-    // borrar array dinamico
-    return enemigos;
-
-}
-
+/*****
+* statsEnemigos* leerEnemigos
+******
+* Lee información de enemigos desde un archivo y la almacena en un arreglo dinámico de structs statsEnemigos.
+******
+* Input:
+* fstream &file : referencia al archivo desde el cual se leen los datos
+* int &cant_enemigos : referencia a una variable donde se almacenará la cantidad de enemigos leídos
+******
+* Returns:
+* statsEnemigos* , puntero al arreglo dinámico de structs con los datos de los enemigos
+*****/
 statsEnemigos* leerEnemigos(fstream &file, int &cant_enemigos){
     string descartable;
+
     getline(file, descartable);
     file>>cant_enemigos;
     file.ignore(1000, '\n');
+
     statsEnemigos* enemigos = new statsEnemigos[cant_enemigos];
-    for(int i=0;i<cant_enemigos;i++){
+
+    for(int i=0; i < cant_enemigos; i++){
         getline(file, enemigos[i].nombre);
+
         file>>descartable;
         file>>enemigos[i].vida;
         file>>descartable;
@@ -183,78 +234,39 @@ statsEnemigos* leerEnemigos(fstream &file, int &cant_enemigos){
         file>>enemigos[i].precision;
         file>>descartable;
         file>>enemigos[i].probabilidad;
+
         file.ignore(1000, '\n');
     }
+
     return enemigos;
 }
 
-struct combatiente {
-    string nombre;
-    int damage;
-    combatiente* next;
-};
+/*****
+* Enemigo* procesarEnemigos
+******
+* Crea un arreglo dinámico de objetos Enemigo a partir de un arreglo de structs statsEnemigos,
+* copiando sus atributos correspondientes a cada objeto Enemigo.
+******
+* Input:
+* statsEnemigos* array : arreglo de structs con los datos de cada enemigo
+* int cantidad : cantidad de enemigos a procesar
+******
+* Returns:
+* Enemigo* , puntero al arreglo dinámico de enemigos creado
+*****/
+Enemigo* procesarEnemigos(statsEnemigos* array, int cantidad){
+    Enemigo* enemigos = new Enemigo[cantidad];
 
-class colaCombate {
-    private:
-        combatiente* frente;
-        combatiente* cola;
-        int size;
-    public:
-        colaCombate() : frente(nullptr), cola(nullptr), size(0) {}
+    for(int i = 0; i < cantidad; i++){
+        enemigos[i].recibirNombre(array[i].nombre);
+        enemigos[i].recibirVida(array[i].vida);
+        enemigos[i].recibirAtaque(array[i].ataque);
+        enemigos[i].recibirPrecision(array[i].precision);
+        enemigos[i].recibirProbabilidad(array[i].probabilidad);   
+    }
 
-        ~colaCombate() {
-            while (frente != nullptr) {
-                pasarTurno();
-            }
-        }
-
-        void agregarCombatiente(int dmg) {   
-            combatiente* nuevo = new combatiente;
-            nuevo->damage = dmg;
-            nuevo->next = nullptr;       
-            if (frente == nullptr) {    
-                frente = nuevo;
-                cola = frente;
-            }
-            else {
-                cola->next = nuevo;
-                cola = nuevo;
-            }          
-            size++;
-            nuevo->next = nullptr; // Asegura que el nuevo nodo apunte a nullptr          
-        }
-
-        void pasarTurno() {
-            if (frente != nullptr) {
-                combatiente* temp = frente;
-                frente = frente->next;
-                delete temp;
-                if (frente == nullptr) {
-                    cola = nullptr; // Si la cola quedó vacía
-                }
-                size--;
-            }
-        }
-
-        int frontDmg() {
-            if (frente == nullptr) {
-                return -1;  
-            }
-            return frente->damage;
-        }
-
-        string frontName() {
-            return frente->nombre;
-        }
-
-        bool isEmpty() {
-            return frente == nullptr;
-        }
-
-        int getSize() {
-            return size;
-        }
-};
+    return enemigos;
+}
 
 void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
     int cantidadEnemigos = aleatorioEntero(1,3); //esto viene dado por defecto
@@ -291,7 +303,7 @@ void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
 
     int cont_objetivo = 0;
 
-    while(jugador.estasVivo() && cont_objetivo != cantidadEnemigos){
+    while(jugador.estaVivo() && cont_objetivo != cantidadEnemigos){
         for(int i=0; i<cantidadEnemigos ; i++){
             if(combatientes[i].estaVivo()){
                 cout<<i+1<<". "<<combatientes[i].mostrarNombre()<<"  VIDA: "<<combatientes[i].mostrarVida()<<endl;
@@ -337,11 +349,11 @@ void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
                 }
                 
                 turnos.pasarTurno(); 
-                if(jugador.estasVivo() == false) break; //si el jugador muere, se sale altiro del ciclo
+                if(jugador.estaVivo() == false) break; //si el jugador muere, se sale altiro del ciclo
             }
         }
     }
-    if(jugador.estasVivo() == true){
+    if(jugador.estaVivo() == true){
         cout<<"GANASTE :D"<<endl;
     
     }
@@ -440,7 +452,7 @@ void combateJefe(Jugador &jugador, Jefe* jefes, int jefesTotales, string nombre)
     }
     colaCombate turnos;
     // Combate contra el Jefe
-    while(jugador.estasVivo() && jefes[posJefe].estaVivo()){
+    while(jugador.estaVivo() && jefes[posJefe].estaVivo()){
         cout<<jefes[posJefe].mostrarNombre()<<" VIDA: "<<jefes[posJefe].mostrarVida()<<endl;
         if(aciertaAtaque(jugador.mostrarPrecision()) == true){
             turnos.agregarCombatiente(jugador.mostrarAtaque());
@@ -474,15 +486,86 @@ void combateJefe(Jugador &jugador, Jefe* jefes, int jefesTotales, string nombre)
             }
             
             turnos.pasarTurno(); 
-            if(jugador.estasVivo() == false) break; //si el jugador muere, se sale altiro del ciclo
+            if(jugador.estaVivo() == false) break; //si el jugador muere, se sale altiro del ciclo
         }
     }
     
-    if(jugador.estasVivo()){
+    if(jugador.estaVivo()){
         cout<<"GANASTE :D"<<endl;
     }
     
 }
+
+// =============================================
+// Sección 4: TDA Cola para el combate
+// =============================================
+struct combatiente {
+    string nombre;
+    int damage;
+    combatiente* next;
+};
+
+class colaCombate {
+    private:
+        combatiente* frente;
+        combatiente* cola;
+        int size;
+    public:
+        colaCombate() : frente(nullptr), cola(nullptr), size(0) {}
+
+        ~colaCombate() {
+            while (frente != nullptr) {
+                pasarTurno();
+            }
+        }
+
+        void agregarCombatiente(int dmg) {   
+            combatiente* nuevo = new combatiente;
+            nuevo->damage = dmg;
+            nuevo->next = nullptr;       
+            if (frente == nullptr) {    
+                frente = nuevo;
+                cola = frente;
+            }
+            else {
+                cola->next = nuevo;
+                cola = nuevo;
+            }          
+            size++;
+            nuevo->next = nullptr; // Asegura que el nuevo nodo apunte a nullptr          
+        }
+
+        void pasarTurno() {
+            if (frente != nullptr) {
+                combatiente* temp = frente;
+                frente = frente->next;
+                delete temp;
+                if (frente == nullptr) {
+                    cola = nullptr; // Si la cola quedó vacía
+                }
+                size--;
+            }
+        }
+
+        int frontDmg() {
+            if (frente == nullptr) {
+                return -1;  
+            }
+            return frente->damage;
+        }
+
+        string frontName() {
+            return frente->nombre;
+        }
+
+        bool isEmpty() {
+            return frente == nullptr;
+        }
+
+        int getSize() {
+            return size;
+        }
+};
 
 
 struct statsMejoras{
@@ -602,6 +685,55 @@ Evento* leerEventos(fstream &file, int &cant_eventos){
     return eventos;
 }
 
+void panelEventos(Jugador &jugador, Jefe* jefes, Evento* eventos, int cantidadEventos){
+    double* pesos = new double[cantidadEventos];
+    for(int i=0; i<cantidadEventos;i++){
+        pesos[i] = eventos[i].probabilidad;
+    }
+    int evento = enteroConProbabilidad(0, cantidadEventos - 1, pesos);
+    
+    cout<<eventos[evento].nombre<<endl<<eventos[evento].informacion<<endl;
+    for(int j=0; j<eventos[evento].cantidadOpciones; j++){
+        cout<<eventos[evento].opciones[j]<<endl;
+    }
+    
+    int opcion;
+    char opcionElegida;
+    cout<<"Que deseas hacer? (Elija SOLO entre las opciones disponibles y en mayusculas :3) "<<endl;cin>>opcionElegida;
+    if(opcionElegida=='A'){
+        opcion=0;
+    }
+    if(opcionElegida=='B'){
+        opcion=1;
+    }
+    if(opcionElegida=='C'){
+        opcion=2;
+    }
+    cout<<eventos[evento].infoOpciones[opcion]<<endl;
+    cout<<eventos[evento].consecuencias[opcion]<<endl;
+    
+    // CocaCola helada
+    if (evento == 0 && opcion == 0) {
+        jugador.matarJugador();
+    } 
+    
+    // Paquete de Lucius Fox
+    if (evento == 1 && opcion == 0) {
+        jugador.cambioAtaque(10);
+    } if (evento == 1 && opcion == 1) {
+        jugador.cambioVida(5);
+    } if (evento == 1 && opcion == 3) {
+        jugador.cambioPresicion(0.3);
+    } 
+    
+    // Destello verde
+    if (evento == 2 && opcion == 0) {
+        jugador.cambioSigilo(0.2);
+    } if (evento == 2 && opcion == 1) {
+        jefes[4].recibirAtaque(5);
+    }
+}
+
 struct Room {
     string nombre;
     string informacion;
@@ -700,7 +832,7 @@ class Mapa {
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
                 cout<<actual->informacion<<endl;
                 combate(jugador,enemigos,enemigosTotales);
-                if(jugador.estasVivo()){
+                if(jugador.estaVivo()){
                     panelMejoras(jugador, mejoras, mejorasTotales);
                 }
             }
@@ -708,7 +840,7 @@ class Mapa {
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
                 cout<<actual->informacion<<endl;
                 combateJefe(jugador,jefes,jefesTotales,actual->nombreJefe);
-                if(jugador.estasVivo() && actual->nombre != "Habitacion de Harley"){ // es decir, que el jugador salio vivo del combate
+                if(jugador.estaVivo() && actual->nombre != "Habitacion de Harley"){ // es decir, que el jugador salio vivo del combate
                     juegoCorriendo = false;
                 }
                 cout<<actual->mensajeFinal<<endl;
@@ -722,7 +854,7 @@ class Mapa {
                 else if(actual->nombre == "Habitacion Acertijo" && jugador.mostrarCordura()>=5){
                     cout<<"Algun texto raro"<<endl;
                     combateJefe(jugador,jefes,jefesTotales,"El Acertijo");
-                    if(jugador.estasVivo()){
+                    if(jugador.estaVivo()){
                         cout<<"Algo que pase si estas vivo :v"<<endl;
                         juegoCorriendo = false;
                     }
@@ -736,55 +868,9 @@ class Mapa {
             if(actual->tipoHabitacion == "(EVENTO)"){
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
                 cout<<actual->informacion<<endl;
-
-                double* pesos = new double[cantidadEventos];
-                for(int i=0; i<cantidadEventos;i++){
-                    pesos[i] = eventos[i].probabilidad;
-                }
-                int evento = enteroConProbabilidad(0, cantidadEventos - 1, pesos);
-                
-                cout<<eventos[evento].nombre<<endl<<eventos[evento].informacion<<endl;
-                for(int j=0; j<eventos[evento].cantidadOpciones; j++){
-                    cout<<eventos[evento].opciones[j]<<endl;
-                }
-                
-                int opcion;
-                char opcionElegida;
-                cout<<"Que deseas hacer? (Elija SOLO entre las opciones disponibles y en mayusculas :3) "<<endl;cin>>opcionElegida;
-                if(opcionElegida=='A'){
-                    opcion=0;
-                }
-                if(opcionElegida=='B'){
-                    opcion=1;
-                }
-                if(opcionElegida=='C'){
-                    opcion=2;
-                }
-                cout<<eventos[evento].infoOpciones[opcion]<<endl;
-                cout<<eventos[evento].consecuencias[opcion]<<endl;
-                
-                // CocaCola helada
-                if (evento == 0 && opcion == 0) {
-                    jugador.matarJugador();
-                } 
-                
-                // Paquete de Lucius Fox
-                if (evento == 1 && opcion == 0) {
-                    jugador.cambioAtaque(10);
-                } if (evento == 1 && opcion == 1) {
-                    jugador.cambioVida(5);
-                } if (evento == 1 && opcion == 3) {
-                    jugador.cambioPresicion(0.3);
-                } 
-                
-                // Destello verde
-                if (evento == 2 && opcion == 0) {
-                    jugador.cambioSigilo(0.2);
-                } if (evento == 2 && opcion == 1) {
-                    jefes[4].recibirAtaque(5);
-                }
+                panelEventos(jugador, jefes, eventos, cantidadEventos);
             }
-            if (jugador.estasVivo() && (actual->centro != nullptr || actual->der != nullptr)) {
+            if (jugador.estaVivo() && (actual->centro != nullptr || actual->der != nullptr)) {
                 int eleccionJugador;
                 cout<<"A donde quieres ir?"<<endl;
                 if (actual->izq != nullptr) {
@@ -829,9 +915,10 @@ int main(){
     //cout introducción
     //cout primeros caminos
     bool juegoCorriendo = true;
-    while(Batman.estasVivo()){
+    cout<<"Inicio del videojuego, bienvenido al asilo de Arkham, eres Batman en una noche oscura y lluviosa dentro del asilo, y debes derrotar a tus peores enemigos, te notifican que Gordon ha sido capturado por el espantapajaros, y encerrado en el centro médico."<<endl;
+    while(Batman.estaVivo()){
         mapa.procesarNodo(Batman, enemigos, cant_enemigos, mejoras, cant_mejoras, jefes, cant_jefes, juegoCorriendo);
-        if (Batman.estasVivo() == false) {
+        if (Batman.estaVivo() == false) {
             cout<<"YOU DIED"<<endl;
             break;
         }
