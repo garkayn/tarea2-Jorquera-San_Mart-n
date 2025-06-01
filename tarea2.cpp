@@ -48,14 +48,17 @@ class Jugador {
         void cambioAtaque(int cambio){
             ataque += cambio;
         }
-        void cambioPresicion(int cambio){
+        void cambioPresicion(float cambio){
             precision += cambio;
         }
         void cambioCordura(int cambio){
             cordura += cambio;
         }
-        void cambioSigilo(int cambio){
+        void cambioSigilo(float cambio){
             sigilo += cambio;
+        }
+        void cambioRecuperacion(int cambio){
+            recuperacion += cambio;
         }
         int mostrarVida(){
             return vida;
@@ -71,6 +74,9 @@ class Jugador {
         }
         float mostrarSigilo(){
             return sigilo;
+        }
+        int mostrarRecuperacion(){
+            return recuperacion;
         }
         void recibirGolpe(int damage){
             vida -= damage;
@@ -172,6 +178,7 @@ statsEnemigos* leerEnemigos(fstream &file, int &cant_enemigos){
 }
 
 struct combatiente {
+    string nombre;
     int damage;
     combatiente* next;
 };
@@ -218,11 +225,15 @@ class colaCombate {
             }
         }
 
-        int frontValue() {
+        int frontDmg() {
             if (frente == nullptr) {
                 return -1;  
             }
             return frente->damage;
+        }
+
+        string frontName() {
+            return frente->nombre;
         }
 
         bool isEmpty() {
@@ -268,27 +279,25 @@ void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
         }   
     }
 
+    int cont_objetivo;
+
     while(jugador.estasVivo() && turnos.getSize()>1){
-        cout<<"A que enemigo quieres atacar?"<<endl;
         for(int i=0; i<cantidadEnemigos ; i++){
             if(combatientes[i].estaVivo()){
                 cout<<i+1<<". "<<combatientes[i].mostrarNombre()<<"  VIDA: "<<combatientes[i].mostrarVida()<<endl;
             }   
         }
-        int objetivo;
-        cin>>objetivo;
-        objetivo--;
-        combatientes[objetivo].perderVida(turnos.frontValue()); 
+        combatientes[cont_objetivo].perderVida(turnos.frontDmg()); 
         turnos.pasarTurno();  
-        cout<<"ELIGES A "<<objetivo+1<<" LE HACES "<<jugador.mostrarAtaque()<<" DE DANIO Y LE BAJAS A "<<combatientes[objetivo].mostrarVida()<<" DE VIDA "<<endl;
+        cout<<"ELIGES "<<objetivo+1<<" LE HACES "<<jugador.mostrarAtaque()<<" DE DANIO Y LE BAJAS A "<<combatientes[objetivo].mostrarVida()<<" DE VIDA "<<endl;
         for(int i=0; i<cantidadEnemigos ; i++){
             if(combatientes[i].estaVivo()){
                 cout<<"TAMANIO DE LA COLA: "<<turnos.getSize()<<endl;
-                jugador.cambioVida(-turnos.frontValue());
-                cout<<"TE HICIERON "<<turnos.frontValue()<<" DE DANIO, AHORA TIENES "<<jugador.mostrarVida()<<" DE VIDA."<<endl;
+                jugador.cambioVida(-turnos.frontDmg());
+                cout<<"TE HICIERON "<<turnos.frontDmg()<<" DE DANIO, AHORA TIENES "<<jugador.mostrarVida()<<" DE VIDA."<<endl;
                 turnos.pasarTurno(); 
             }
-            else if(!combatientes[i].estaVivo() && combatientes[i].mostrarAtaque() == turnos.frontValue()){ //anadir un identificador mas fuerte que el danio del pj
+            else if(!combatientes[i].estaVivo() && combatientes[i].mostrarAtaque() == turnos.frontDmg() && combatientes[i].mostrarNombre() == turnos.frontName()){
                 turnos.pasarTurno();
             }
         }
@@ -299,6 +308,7 @@ void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
         for(int i=0; i<cantidadEnemigos ; i++){
             if(combatientes[i].estaVivo()){
                 turnos.agregarCombatiente(combatientes[i].mostrarAtaque());
+                cout<<"combatiente: "<<combatientes[i].mostrarNombre()<<endl;
             }
                 
         }
@@ -306,6 +316,63 @@ void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
     }
 
     turnos.~colaCombate();
+}
+
+struct statsMejoras{
+    string* info;
+    int vida;
+    int ataque;
+    float precision;
+    float sigilo;
+    int recuperacion;
+};
+
+statsMejoras leerMejoras(fstream &file, int &cant_mejoras){
+    string descartable;
+    statsMejoras mejoras;
+    getline(file,descartable);
+    file>>cant_mejoras;
+    mejoras.info = new string[cant_mejoras];
+    for(int i=0;i<cant_mejoras;i++){
+        string mejora_s;
+        string informacion = "";
+        string concatenar;
+        file>>concatenar;
+        informacion += concatenar;
+        informacion += " ";
+        file>>mejora_s;
+        informacion+=mejora_s;   
+        if(concatenar == "Vida"){
+            int mejora = stoi(mejora_s);
+            mejoras.vida = mejora;    
+        }
+        else if(concatenar == "Ataque"){
+            int mejora = stoi(mejora_s);
+            mejoras.ataque = mejora;    
+        }
+        else if(concatenar == "Precision") {
+            float mejora_f = stof(mejora_s);
+            mejoras.precision = mejora_f;
+        }   
+        else if(concatenar == "Sigilo") {
+            float mejora_f = stof(mejora_s);
+            mejoras.sigilo = mejora_f;
+        }       
+        else{
+            int mejora = stoi(mejora_s);
+            mejoras.recuperacion = mejora;
+        }        
+        mejoras.info[i] = informacion;
+    }
+
+    return mejoras;
+}
+
+void panelMejoras(Jugador &jugador, statsMejoras mejoras, int mejorasTotales){
+    cout<<"Has sobrevivido el combate!\nRecuperas 3 de vida tras el combate."<<endl;
+    jugador.cambioVida(mejoras.vida);
+    cout<<"Debes decidir:"<<endl;
+    
 }
 
 struct Evento {
@@ -436,12 +503,14 @@ class Mapa {
             cantidadEventos = n;
         }
 
-        void procesarNodo(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
+        void procesarNodo(Jugador &jugador, Enemigo* enemigos, int enemigosTotales, statsMejoras mejoras, int mejorasTotales){
             if(actual->tipoHabitacion == "(COMBATE)"){
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
                 cout<<actual->informacion<<endl;
                 combate(jugador,enemigos,enemigosTotales);
-                //hacer el combate y el return depende del resultado del combate
+                if(jugador.estasVivo()){
+                    panelMejoras(jugador, mejoras, mejorasTotales);
+                }
             }
             if(actual->tipoHabitacion == "(COMBATE_FINAL)"){
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
@@ -559,56 +628,6 @@ statsJefes* leerJefes(fstream &file, int &cant_jefes){
     return jefes;
 }
 
-struct statsMejoras{
-    string* info;
-    int vida;
-    int ataque;
-    float precision;
-    float sigilo;
-    int recuperacion;
-};
-
-statsMejoras leerMejoras(fstream &file, int &cant_mejoras){
-    string descartable;
-    statsMejoras mejoras;
-    getline(file,descartable);
-    file>>cant_mejoras;
-    mejoras.info = new string[cant_mejoras];
-    for(int i=0;i<cant_mejoras;i++){
-        string mejora_s;
-        string informacion = "";
-        string concatenar;
-        file>>concatenar;
-        informacion += concatenar;
-        informacion += " ";
-        file>>mejora_s;
-        informacion+=mejora_s;   
-        if(concatenar == "Vida"){
-            int mejora = stoi(mejora_s);
-            mejoras.vida = mejora;    
-        }
-        else if(concatenar == "Ataque"){
-            int mejora = stoi(mejora_s);
-            mejoras.ataque = mejora;    
-        }
-        else if(concatenar == "Precision") {
-            float mejora_f = stof(mejora_s);
-            mejoras.precision = mejora_f;
-        }   
-        else if(concatenar == "Sigilo") {
-            float mejora_f = stof(mejora_s);
-            mejoras.sigilo = mejora_f;
-        }       
-        else{
-            int mejora = stoi(mejora_s);
-            mejoras.recuperacion = mejora;
-        }        
-        mejoras.info[i] = informacion;
-    }
-
-    return mejoras;
-}
-
 int main(){
     fstream file;
     Jugador Batman;
@@ -629,7 +648,7 @@ int main(){
     //cout introducción
     //cout primeros caminos
     while(Batman.estasVivo()){
-        mapa.procesarNodo(Batman, enemigos, cant_enemigos);
+        mapa.procesarNodo(Batman, enemigos, cant_enemigos, mejoras, cant_mejoras);
         if (Batman.estasVivo() == false) {
             cout<<"YOU DIED";
             break;
