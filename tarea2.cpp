@@ -45,7 +45,7 @@ class Jugador {
         float sigilo;
         int recuperacion;
     public :
-        Jugador(){vida = 60; ataque = 5; precision = 0.8; cordura = 100; sigilo = 0.2; recuperacion = 5;}
+        Jugador(){vida = 60; ataque = 5; precision = 0.8; cordura = 6; sigilo = 0.2; recuperacion = 5;}
         bool estasVivo(){
             if(vida>0) return true;
             return false;
@@ -78,7 +78,7 @@ class Jugador {
             return precision;
         }
         int mostrarCordura(){
-            return sigilo;
+            return cordura;
         }
         float mostrarSigilo(){
             return sigilo;
@@ -143,6 +143,9 @@ class Enemigo {
         }     
         void perderVida(int dmg){
             vida -= dmg;
+        }
+        void perderPrecision(double asignacion){
+            precision -= asignacion;
         }
         bool estaVivo(){
             return vida>0;
@@ -271,13 +274,15 @@ void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
     if(respuesta == "SI"){
         cout<<"Decides entrar de manera sigilosa, y alcanzas a dañar a varios enemigos"<<endl;
         for(int j=0; j<cantidadEnemigos; j++){
-            combatientes[j].perderVida(jugador.mostrarAtaque()*(jugador.mostrarSigilo() + 1));
-            jugador.cambioCordura(2);
-            cout<<combatientes[j].mostrarNombre()<<endl;
+            combatientes[j].perderVida(jugador.mostrarAtaque()*(jugador.mostrarSigilo() + 1));           
         }
+        jugador.cambioCordura(2);
     }
     else{
         cout<<"Decides entrar a lo bruto"<<endl;
+        for(int j=0; j<cantidadEnemigos; j++){
+            combatientes[j].perderPrecision(0.1);
+        }
         jugador.cambioCordura(-2);
     }
     colaCombate turnos;
@@ -702,14 +707,14 @@ class Mapa {
             if(actual->tipoHabitacion == "(COMBATE_FINAL)"){
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
                 cout<<actual->informacion<<endl;
-                cout<<actual->mensajeFinal<<endl;
                 combateJefe(jugador,jefes,jefesTotales,actual->nombreJefe);
-                if(jugador.estasVivo()){ // es decir, que el jugador salio vivo del combate
+                if(jugador.estasVivo() && actual->nombre != "Habitacion de Harley"){ // es decir, que el jugador salio vivo del combate
                     juegoCorriendo = false;
                 }
-                //hacer el combate y el return depende del resultado combate
+                cout<<actual->mensajeFinal<<endl;
             }
             if(actual->tipoHabitacion == "(FINAL)"){
+                cout<<"Cordura: "<<jugador.mostrarCordura()<<endl;
                 if(actual->nombre == "Oficina del alcaide" && jugador.mostrarCordura()<5){ //caso donde esta la mecanica final
                     cout<<"Textito que queremos"<<endl;
                     actual = inicio;
@@ -719,7 +724,7 @@ class Mapa {
                     combateJefe(jugador,jefes,jefesTotales,"El Acertijo");
                     if(jugador.estasVivo()){
                         cout<<"Algo que pase si estas vivo :v"<<endl;
-                        jugador.matarJugador();
+                        juegoCorriendo = false;
                     }
                 }
                 else{
