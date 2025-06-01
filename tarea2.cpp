@@ -86,6 +86,7 @@ class Jugador {
         int cordura;
         float sigilo;
         int recuperacion;
+
     public :
         Jugador(){vida = 60; ataque = 5; precision = 0.8; cordura = 6; sigilo = 0.2; recuperacion = 5;}
         // Métodos de modificación
@@ -136,7 +137,76 @@ class Jugador {
 };
 
 // =============================================
-// Sección 3: Enemigos
+// Sección 3: TDA Cola para el combate
+// =============================================
+struct combatiente {
+    string nombre;
+    int damage;
+    combatiente* next;
+};
+
+class colaCombate {
+    private:
+        combatiente* frente;
+        combatiente* cola;
+        int size;
+
+    public:
+        colaCombate() : frente(nullptr), cola(nullptr), size(0) {}
+
+        ~colaCombate() {
+            while (frente != nullptr) {
+                pasarTurno();
+            }
+        }
+
+        void agregarCombatiente(int dmg) {   
+            combatiente* nuevo = new combatiente;
+            nuevo->damage = dmg;
+            nuevo->next = nullptr;       
+            if (frente == nullptr) {    
+                frente = nuevo;
+                cola = frente;
+            }
+            else {
+                cola->next = nuevo;
+                cola = nuevo;
+            }          
+            size++;
+            nuevo->next = nullptr;       
+        }
+
+        void pasarTurno() {
+            if (frente != nullptr) {
+                combatiente* temp = frente;
+                frente = frente->next;
+                delete temp;
+                if (frente == nullptr) {
+                    cola = nullptr;
+                }
+                size--;
+            }
+        }
+
+        int frontDmg() {
+            return frente->damage;
+        }
+
+        string frontName() {
+            return frente->nombre;
+        }
+
+        bool isEmpty() {
+            return frente == nullptr;
+        }
+
+        int getSize() {
+            return size;
+        }
+};
+
+// =============================================
+// Sección 4: Enemigos
 // =============================================
 struct statsEnemigos{
     string nombre;
@@ -268,99 +338,264 @@ Enemigo* procesarEnemigos(statsEnemigos* array, int cantidad){
     return enemigos;
 }
 
-void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales){
-    int cantidadEnemigos = aleatorioEntero(1,3); //esto viene dado por defecto
-    Enemigo* combatientes = new Enemigo[cantidadEnemigos];
+// =============================================
+// Sección 5: Combate para enemigos
+// =============================================
+
+/*****
+* void seleccionarEnemigos
+******
+* Selecciona una cantidad específica de enemigos de un arreglo, basándose en sus probabilidades individuales,
+* y los almacena en otro arreglo para ser usados como combatientes.
+******
+* Input:
+* Enemigo* enemigos : Arreglo de enemigos disponibles para selección
+* int enemigosTotales : Cantidad total de enemigos en el arreglo
+* Enemigo* combatientes : Arreglo donde se almacenarán los enemigos seleccionados
+* int cantidadEnemigosCombate : Cantidad de enemigos en el combate
+******
+* Returns:
+* void , Los enemigos seleccionados se guardan en el arreglo 'combatientes' y se imprime el nombre de cada uno
+*****/
+void seleccionarEnemigos(Enemigo* enemigos, int enemigosTotales, Enemigo* combatientes, int cantidadEnemigosCombate) {
     double* pesos = new double[enemigosTotales];
-    for(int i = 0; i<enemigosTotales; i++){
+    for (int i = 0; i < enemigosTotales; i++) {
         pesos[i] = enemigos[i].mostrarProbabilidad();
     }
-    for(int j = 0; j<cantidadEnemigos; j++){
-        int seleccionadorEnemigo = enteroConProbabilidad(0,enemigosTotales-1,pesos);
+    for (int j = 0; j < cantidadEnemigosCombate; j++) {
+        int seleccionadorEnemigo = enteroConProbabilidad(0, enemigosTotales - 1, pesos);
         combatientes[j] = enemigos[seleccionadorEnemigo];
-        cout<<combatientes[j].mostrarNombre()<<endl;
+        cout << combatientes[j].mostrarNombre() << endl;
     }
-    cout<<"Quieres entrar con sigilo? "<<endl<<"SI o NO"<<endl;
-    string respuesta;
-    cin>>respuesta;
-    if(respuesta == "SI"){
-        cout<<"Decides entrar de manera sigilosa, y alcanzas a dañar a varios enemigos"<<endl;
-        for(int j=0; j<cantidadEnemigos; j++){
-            combatientes[j].perderVida(jugador.mostrarAtaque()*(jugador.mostrarSigilo() + 1));           
-        }
-        jugador.cambioCordura(2);
-    }
-    else{
-        cout<<"Decides entrar a lo bruto"<<endl;
-        for(int j=0; j<cantidadEnemigos; j++){
-            combatientes[j].perderPrecision(0.1);
-        }
-        jugador.cambioCordura(-2);
-    }
-    colaCombate turnos;
-    
-    
+    delete[] pesos;
+}
 
+/*****
+* void entradaSigilosaOBruto
+******
+* Permite al jugador elegir entre un enfoque sigiloso o directo (bruto) al iniciar un combate,
+* aplicando diferentes efectos a los enemigos y al jugador según la elección.
+******
+* Input:
+* Jugador &jugador : Referencia al objeto jugador que realiza la acción
+* Enemigo* combatientes : Arreglo de enemigos que participarán en el combate
+* int cantidadEnemigosCombate : Cantidad de enemigos en el combate
+******
+* Returns:
+* void , Modifica el estado de los enemigos y del jugador según la estrategia elegida
+*****/
+void entradaSigilosaOBruto(Jugador &jugador, Enemigo* combatientes, int cantidadEnemigosCombate) {
+    string respuesta;
+    while (true) {
+        cout << "Quieres entrar con sigilo? (s/n)" << endl;
+        cin >> respuesta;
+
+        if (respuesta == "S" || respuesta == "s") {
+            cout << "Decides entrar de manera sigilosa y alcanzas a atacar a varios enemigos sin ser detectado." << endl;
+            
+            for (int j = 0; j < cantidadEnemigosCombate; j++) {
+                combatientes[j].perderVida(jugador.mostrarAtaque() * (jugador.mostrarSigilo() + 1));
+            }
+
+            jugador.cambioCordura(2);
+            break;
+
+        } else if (respuesta == "N" || respuesta == "n"){
+            cout << "Decides atacar de forma directa, causando terror en tus enemigos. La precision de los enemigos a disminuido." << endl;
+            
+            for (int j = 0; j < cantidadEnemigosCombate; j++) {
+                combatientes[j].perderPrecision(0.1);
+            }
+            
+            jugador.cambioCordura(-2);
+            break;
+
+        } else {
+            cout << "Opción no válida. Usa S/N." << endl;
+        }
+    }
+}
+
+/*****
+* void mostrarEstadoCombatientes
+******
+* Muestra en pantalla el estado actual de los combatientes en combate, incluyendo su nombre y vida,
+* solo si están vivos. Los enumera para facilitar la selección.
+******
+* Input:
+* Enemigo* combatientes : Arreglo de combatientes participantes en el combate
+* int cantidadEnemigosCombate : Cantidad total de enemigos en el combate
+******
+* Returns:
+* void , Imprime en consola la lista de combatientes vivos con su información relevante
+*****/
+void mostrarEstadoCombatientes(Jugador &jugador, Enemigo* combatientes, int cantidadEnemigosCombate) {
+    cout << "Batman";
+    for (int i = 0; i < cantidadEnemigosCombate; i++) {
+        if (combatientes[i].estaVivo()) {
+            cout << " | " << combatientes[i].mostrarNombre();
+        }
+    }
+    cout << endl;
+    if (jugador.estaVivo()) {
+    cout << jugador.mostrarVida();       
+    } else {
+        cout << "X";
+    }
+
+    for (int i = 0; i < cantidadEnemigosCombate; i++) {
+        if (combatientes[i].estaVivo()) {
+            cout <<  " | " << combatientes[i].mostrarVida();
+        } else {
+            cout << " | " << "X";
+        }
+    }
+    cout << endl;
+}
+
+/*****
+* void turnoJugador
+******
+* Gestiona el turno de ataque del jugador durante el combate, verificando si acierta,
+* aplicando el daño al enemigo objetivo, y actualizando la cola de turnos.
+* También maneja el cambio de objetivo si el enemigo actual es derrotado.
+******
+* Input:
+* Jugador &jugador : Referencia al objeto jugador que realiza el ataque
+* Enemigo* combatientes : Arreglo de enemigos en combate
+* int &cont_objetivo : Referencia al índice del enemigo objetivo actual (se incrementa si muere)
+* colaCombate &turnos : Referencia a la cola que gestiona el orden de turnos
+******
+* Returns:
+* void , Modifica el estado del combate y muestra resultados en consola
+*****/
+void turnoJugador(Jugador &jugador, Enemigo* combatientes, int &cont_objetivo, colaCombate &turnos) {
+    if (aciertaAtaque(jugador.mostrarPrecision())) {
+        turnos.agregarCombatiente(jugador.mostrarAtaque());
+        combatientes[cont_objetivo].perderVida(turnos.frontDmg());
+
+        cout << "Atacas a " << combatientes[cont_objetivo].mostrarNombre() << " y le haces " << jugador.mostrarAtaque() << " de daño. "<< endl;
+
+        turnos.pasarTurno();
+
+        if (!combatientes[cont_objetivo].estaVivo()) {
+            cont_objetivo++;
+        }
+    } else {
+        cout << "Has fallado!" << endl;
+    }
+}
+
+/*****
+* void turnosEnemigos
+******
+* Gestiona completamente los turnos de los enemigos en combate, incluyendo:
+* 1. Determinación de ataques exitosos/fallidos
+* 2. Actualización de la cola de turnos
+* 3. Aplicación de daño al jugador
+* 4. Visualización del estado del combate
+******
+* Input:
+* Jugador &jugador : Referencia al objeto jugador (recibe daño)
+* Enemigo* combatientes : Arreglo de enemigos en combate
+* int cantidadEnemigosCombate : Total de enemigos participantes
+* colaCombate &turnos : Referencia a la cola de gestión de turnos
+******
+* Returns:
+* void , Actualiza el estado del combate y muestra información en consola
+*****/
+void turnosEnemigos(Jugador &jugador, Enemigo* combatientes, int cantidadEnemigosCombate, colaCombate &turnos) {
+    // Se agregan los enemigos a la cola
+    for (int i = 0; i < cantidadEnemigosCombate; i++) {
+        if (combatientes[i].estaVivo()) {
+            if (aciertaAtaque(combatientes[i].mostrarPrecision())) {
+                turnos.agregarCombatiente(combatientes[i].mostrarAtaque());
+            } else {
+                cout << endl;
+                cout << combatientes[i].mostrarNombre() << " ha fallado!" << endl;
+                cout << endl;
+                mostrarEstadoCombatientes(jugador, combatientes, cantidadEnemigosCombate);
+            }
+        }
+    }
+    // Se ejecutan ataques de los enemigos
+    for (int i = 0; i < cantidadEnemigosCombate; i++) {
+        if (combatientes[i].estaVivo() && !turnos.isEmpty()) {
+
+            cout << endl;
+            
+            jugador.cambioVida(-turnos.frontDmg());
+            cout << combatientes[i].mostrarNombre() << " ataca y te hace " << turnos.frontDmg() << " de daño."<< endl;
+            turnos.pasarTurno();
+
+            cout << endl;
+
+            mostrarEstadoCombatientes(jugador, combatientes, cantidadEnemigosCombate);
+
+            if (!jugador.estaVivo()) break;
+        }
+    }
+}
+
+/*****
+* void combate
+******
+* Gestiona el flujo completo de un combate, incluyendo:
+* 1. Selección aleatoria de enemigos
+* 2. Inicio del combate con entrada sigilosa o bruta
+* 3. Turnos alternados entre jugador y enemigos
+* 4. Visualización constante del estado del combate
+* 5. Liberación de recursos al finalizar
+******
+* Input:
+* Jugador &jugador : Referencia al objeto jugador que participa en el combate
+* Enemigo* enemigos : Arreglo de todos los enemigos disponibles
+* int enemigosTotales : Cantidad total de enemigos en el arreglo
+******
+* Returns:
+* void , Modifica el estado del jugador y enemigos durante el combate
+*****/
+void combate(Jugador &jugador, Enemigo* enemigos, int enemigosTotales) {
+    int cantidadEnemigosCombate = aleatorioEntero(1, 3);
+    Enemigo* combatientes = new Enemigo[cantidadEnemigosCombate];
+    colaCombate turnos;
     int cont_objetivo = 0;
 
-    while(jugador.estaVivo() && cont_objetivo != cantidadEnemigos){
-        for(int i=0; i<cantidadEnemigos ; i++){
-            if(combatientes[i].estaVivo()){
-                cout<<i+1<<". "<<combatientes[i].mostrarNombre()<<"  VIDA: "<<combatientes[i].mostrarVida()<<endl;
-            }   
-        }
-        if(aciertaAtaque(jugador.mostrarPrecision()) == true){
-            turnos.agregarCombatiente(jugador.mostrarAtaque());
-            combatientes[cont_objetivo].perderVida(turnos.frontDmg());
-            if(combatientes[cont_objetivo].mostrarVida()>0){
-                cout<<"ATACASTE A "<<cont_objetivo+1<<" LE HACES "<<jugador.mostrarAtaque()<<" DE DANIO Y LE BAJAS A "<<combatientes[cont_objetivo].mostrarVida()<<" DE VIDA "<<endl;
-            } 
-            else{
-                cout<<"ATACASTE A "<<cont_objetivo+1<<" LE HACES "<<jugador.mostrarAtaque()<<" DE DANIO Y LE BAJAS A 0 DE VIDA "<<endl;
-            }
-            turnos.pasarTurno();  
-        
-            if(combatientes[cont_objetivo].estaVivo() == false){
-                cont_objetivo++;
-            }
-        }else{
-            cout<<"TU ATAQUE FALLO"<<endl;
-        }
+    seleccionarEnemigos(enemigos, enemigosTotales, combatientes, cantidadEnemigosCombate);
 
-        //ahora se agregan los combatientes a la cola
+    cout << endl;
+    cout << "=== COMBATE ===" << endl;
+    cout << endl;
 
-        for(int i=0; i<cantidadEnemigos ; i++){
-            if(combatientes[i].estaVivo() && aciertaAtaque(combatientes[i].mostrarPrecision()) == true){
-                turnos.agregarCombatiente(combatientes[i].mostrarAtaque());  
-            }else if(combatientes[i].estaVivo()){
-                cout<<"EL ENEMIGO :"<<combatientes[i].mostrarNombre()<< " FALLO EL ATAQUE"<<endl;
-            }   
-        }
-  
-        
-        for(int i=0; i<cantidadEnemigos ; i++){
-            if(combatientes[i].estaVivo() && !turnos.isEmpty()){
-                jugador.cambioVida(-turnos.frontDmg());
-                if(jugador.mostrarVida()<0){
-                    cout<<"TE HICIERON "<<turnos.frontDmg()<<" DE DANIO, AHORA TIENES 0 DE VIDA."<<endl; //paso para no mostrar vida negativa
-                }
-                else{
-                    cout<<"TE HICIERON "<<turnos.frontDmg()<<" DE DANIO, AHORA TIENES "<<jugador.mostrarVida()<<" DE VIDA."<<endl;
-                }
-                
-                turnos.pasarTurno(); 
-                if(jugador.estaVivo() == false) break; //si el jugador muere, se sale altiro del ciclo
-            }
-        }
-    }
-    if(jugador.estaVivo() == true){
-        cout<<"GANASTE :D"<<endl;
+    mostrarEstadoCombatientes(jugador, combatientes, cantidadEnemigosCombate);
     
+    cout << endl;
+
+    entradaSigilosaOBruto(jugador, combatientes, cantidadEnemigosCombate);
+
+    cout << endl;
+
+    mostrarEstadoCombatientes(jugador, combatientes, cantidadEnemigosCombate);
+
+    while (jugador.estaVivo() && cont_objetivo != cantidadEnemigosCombate) {
+        cout << endl;
+
+        turnoJugador(jugador, combatientes, cont_objetivo, turnos);
+
+        cout << endl;
+
+        mostrarEstadoCombatientes(jugador, combatientes, cantidadEnemigosCombate);
+
+        turnosEnemigos(jugador, combatientes, cantidadEnemigosCombate, turnos);
     }
+
     delete[] combatientes;
-    delete[] pesos;
     turnos.~colaCombate();
 }
+
+// =============================================
+// Sección 6: Jefes
+// =============================================
 
 struct statsJefes{
     string nombre;
@@ -377,6 +612,8 @@ class Jefe {
         float precision;
     public:
         Jefe(){nombre = ""; vida = 0; ataque = 0; precision = 0;}
+        
+        // Métodos de asignación
         void recibirNombre(string asignacion){
             nombre = asignacion;
         }
@@ -389,6 +626,13 @@ class Jefe {
         void recibirAtaque(int asignacion){
             ataque = asignacion;
         }
+
+        // Métodos de modificación
+        void perderVida(int dmg){
+            vida -= dmg;
+        }
+
+        // Métodos para retornar estado
         string mostrarNombre(){
             return nombre;
         }
@@ -401,14 +645,23 @@ class Jefe {
         float mostrarPrecision(){
             return precision;
         }
-        void perderVida(int dmg){
-            vida -= dmg;
-        }
         bool estaVivo(){
             return vida>0;
         }
 };
 
+/*****
+* statsJefes* leerJefes
+******
+* Lee los datos de los jefes desde un archivo, almacenándolos en un arreglo dinámico.
+******
+* Input:
+* fstream &file : Referencia al flujo de archivo ya abierto para lectura
+* int &cant_jefes : Referencia a variable donde se almacenará la cantidad de jefes leídos
+******
+* Returns:
+* statsJefes* , Puntero a arreglo dinámico con los datos de todos los jefes leídos
+*****/
 statsJefes* leerJefes(fstream &file, int &cant_jefes){
     string descartable;
     getline(file, descartable);
@@ -428,6 +681,19 @@ statsJefes* leerJefes(fstream &file, int &cant_jefes){
     return jefes;
 }
 
+/*****
+* Jefe* procesarJefes
+******
+* Convierte un arreglo de structs statsJefes a un arreglo de objetos Jefe,
+* asignando los valores correspondientes a cada atributo del jefe.
+******
+* Input:
+* statsJefes* array : Arreglo de structs con datos base de los jefes
+* int cantidad : Cantidad de jefes en el arreglo
+******
+* Returns:
+* Jefe* , Puntero a nuevo arreglo de objetos Jefe completamente inicializados
+*****/
 Jefe* procesarJefes(statsJefes* array, int cantidad){
     Jefe* jefes = new Jefe[cantidad];
     for(int i = 0; i<cantidad ; i++){
@@ -439,6 +705,10 @@ Jefe* procesarJefes(statsJefes* array, int cantidad){
     // borrar array dinamico
     return jefes;
 }
+
+// =============================================
+// Sección 6: Combate para jefes
+// =============================================
 
 void combateJefe(Jugador &jugador, Jefe* jefes, int jefesTotales, string nombre){
     int posJefe = 0;
@@ -495,78 +765,6 @@ void combateJefe(Jugador &jugador, Jefe* jefes, int jefesTotales, string nombre)
     }
     
 }
-
-// =============================================
-// Sección 4: TDA Cola para el combate
-// =============================================
-struct combatiente {
-    string nombre;
-    int damage;
-    combatiente* next;
-};
-
-class colaCombate {
-    private:
-        combatiente* frente;
-        combatiente* cola;
-        int size;
-    public:
-        colaCombate() : frente(nullptr), cola(nullptr), size(0) {}
-
-        ~colaCombate() {
-            while (frente != nullptr) {
-                pasarTurno();
-            }
-        }
-
-        void agregarCombatiente(int dmg) {   
-            combatiente* nuevo = new combatiente;
-            nuevo->damage = dmg;
-            nuevo->next = nullptr;       
-            if (frente == nullptr) {    
-                frente = nuevo;
-                cola = frente;
-            }
-            else {
-                cola->next = nuevo;
-                cola = nuevo;
-            }          
-            size++;
-            nuevo->next = nullptr; // Asegura que el nuevo nodo apunte a nullptr          
-        }
-
-        void pasarTurno() {
-            if (frente != nullptr) {
-                combatiente* temp = frente;
-                frente = frente->next;
-                delete temp;
-                if (frente == nullptr) {
-                    cola = nullptr; // Si la cola quedó vacía
-                }
-                size--;
-            }
-        }
-
-        int frontDmg() {
-            if (frente == nullptr) {
-                return -1;  
-            }
-            return frente->damage;
-        }
-
-        string frontName() {
-            return frente->nombre;
-        }
-
-        bool isEmpty() {
-            return frente == nullptr;
-        }
-
-        int getSize() {
-            return size;
-        }
-};
-
 
 struct statsMejoras{
     string* info;
