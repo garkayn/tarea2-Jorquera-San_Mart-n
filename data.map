@@ -58,9 +58,11 @@ eki
 Celdas de alta seguridad
 eki
 14
-(MINIJUEGO)
+(COMBATE_FINAL)
 Cloacas
-eki
+info habitacion
+Cocodrilo Asesino
+info final
 15
 (FINAL)
 Oficina del alcaide
@@ -76,43 +78,52 @@ eki
 18
 (COMBATE_FINAL)
 Centro de investigación botanica
-eki
-Holi
+info habitacion
+Hiedra Venenosa
+info final
 19
 (COMBATE_FINAL)
 Subterraneo
-eki
-Holi
+info habitacion
+Bane
+info final
 20
 (COMBATE_FINAL)
 Subterraneo
-eki
-Holi
+info habitacion
+Bane
+info final
 21
-(COMBATE)
-Harley
+(COMBATE_FINAL)
+Habitacion de Harley
 eki
+Harley
+Holi
 22
-(COMBATE)
-Harley
+(COMBATE_FINAL)
+Habitacion de Harley
 eki
+Harley
+Holi
 23
 (FINAL)
-Acertijo Bueno
+Habitacion Acertijo
 eki
 24
 (FINAL)
-Acertijo malo
+Habitacion Acertijo
 eki
 25
 (COMBATE_FINAL)
-Joker
+Habitacion Joker
 eki
+Joker
 Holi
 26
 (COMBATE_FINAL)
-Joker
+Habitacion Joker
 eki
+Joker
 Holi
 ARCOS
 26
@@ -201,11 +212,11 @@ Cocodrilo Asesino
 Vida 40 Ataque 15 Precision 0.7
 Espantapajaros
 Vida 20 Ataque 4 Precision 0.5
-El Acertijo 
+El Acertijo
 Vida 10 Ataque 2 Precision 1
-Hiedra Venenosa 
+Hiedra Venenosa
 Vida 30 Ataque 10 Precision 0.6
-Joker 
+Joker
 Vida 15 Ataque 6 Precision 0.9
 MEJORAS DE COMBATE
 5
