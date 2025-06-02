@@ -78,6 +78,7 @@ bool aciertaAtaque(double probabilidad) {
 // =============================================
 // Sección 2: Clase Personaje jugable
 // =============================================
+
 class Jugador {
     private :
         int vida;
@@ -208,6 +209,7 @@ class colaCombate {
 // =============================================
 // Sección 4: Enemigos
 // =============================================
+
 struct statsEnemigos{
     string nombre;
     int vida;
@@ -419,15 +421,14 @@ void entradaSigilosaOBruto(Jugador &jugador, Enemigo* combatientes, int cantidad
 /*****
 * void mostrarEstadoCombatientes
 ******
-* Muestra en pantalla el estado actual de los combatientes en combate, incluyendo su nombre y vida,
-* solo si están vivos. Los enumera para facilitar la selección.
+* Muestra el estado actual del combate contra un grupo de enemigos.
 ******
 * Input:
 * Enemigo* combatientes : Arreglo de combatientes participantes en el combate
 * int cantidadEnemigosCombate : Cantidad total de enemigos en el combate
 ******
 * Returns:
-* void , Imprime en consola la lista de combatientes vivos con su información relevante
+* void , Imprime el estado de la vida y el nombre de los combatientes
 *****/
 void mostrarEstadoCombatientes(Jugador &jugador, Enemigo* combatientes, int cantidadEnemigosCombate) {
     cout << "Batman";
@@ -610,6 +611,7 @@ class Jefe {
         int vida;
         int ataque;
         float precision;
+        
     public:
         Jefe(){nombre = ""; vida = 0; ataque = 0; precision = 0;}
         
@@ -707,64 +709,158 @@ Jefe* procesarJefes(statsJefes* array, int cantidad){
 }
 
 // =============================================
-// Sección 6: Combate para jefes
+// Sección 7: Combate para jefes
 // =============================================
+
+/*****
+* void mostrarEstadoJefes
+******
+* Muestra el estado actual del combate contra un jefe específico.
+******
+* Input:
+* Jugador &jugador : Referencia al objeto jugador (para verificar estado y vida)
+* Jefe* jefes : Arreglo de jefes en combate
+* int posJefe : Índice del jefe actual en el arreglo
+******
+* Returns:
+* void , Imprime el estado del combate
+*****/
+void mostrarEstadoJefes (Jugador &jugador, Jefe* jefes, int posJefe) {
+    cout << "Batman";
+
+    if (jefes[posJefe].estaVivo()) {
+        cout << " | " << jefes[posJefe].mostrarNombre();
+    }
+
+    cout << endl;
+
+    if (jugador.estaVivo()) {
+    cout << jugador.mostrarVida();       
+    } else {
+        cout << "X";
+    }
+
+    if (jefes[posJefe].estaVivo()) {
+        cout <<  " | " << jefes[posJefe].mostrarVida();
+    } else {
+        cout << " | " << "X";
+    }
+    
+    cout << endl;
+}
+
+/*****
+* void turnoJugadorJefes
+******
+* Gestiona el turno de ataque del jugador contra un jefe en combate:
+* 1. Verifica si el ataque es exitoso según la precisión del jugador
+* 2. Registra el daño en la cola de turnos si acierta
+* 3. Aplica el daño al jefe correspondiente
+* 4. Proporciona retroalimentación visual del resultado
+******
+* Input:
+* Jugador &jugador : Referencia al objeto jugador que realiza el ataque
+* Jefe* jefes : Arreglo de jefes en combate
+* int posJefe : Índice del jefe objetivo en el arreglo
+* colaCombate &turnos : Referencia a la cola de gestión de turnos
+******
+* Returns:
+* void , Modifica el estado del jefe en función de las estadisticas del jugador y actualiza la cola de turnos
+*****/
+void turnoJugadorJefes(Jugador &jugador, Jefe* jefes, int posJefe, colaCombate &turnos) {
+    if (aciertaAtaque(jugador.mostrarPrecision())) {
+        turnos.agregarCombatiente(jugador.mostrarAtaque());
+        jefes[posJefe].perderVida(turnos.frontDmg());
+
+        cout << "Atacas a " << jefes[posJefe].mostrarNombre() << " y le haces " << jugador.mostrarAtaque() << " de daño. "<< endl;
+
+        turnos.pasarTurno();
+    } else {
+        cout << "Has fallado!" << endl;
+    }
+}
+
+/*****
+* void turnoJefe
+******
+* Gestiona el turno completo de un jefe en combate:
+* 1. Intenta atacar al jugador (puede fallar según su precisión)
+* 2. Si acierta, registra el daño en la cola de turnos
+* 3. Aplica el daño al jugador si corresponde
+* 4. Muestra el estado actualizado del combate después de cada acción
+******
+* Input:
+* Jugador &jugador : Referencia al objeto jugador que recibe el daño
+* Jefe* jefes : Arreglo de jefes en combate
+* int posJefe : Índice del jefe actual en el arreglo
+* colaCombate &turnos : Referencia a la cola que gestiona el orden de turnos
+******
+* Returns:
+* void , Modifica el estado del jugador y actualiza la información del combate
+*****/
+void turnoJefe(Jugador &jugador, Jefe* jefes, int posJefe, colaCombate &turnos) {
+    // Se agrega el jefe a la cola
+    if (jefes[posJefe].estaVivo()) {
+        if (aciertaAtaque(jefes[posJefe].mostrarPrecision())) {
+            turnos.agregarCombatiente(jefes[posJefe].mostrarAtaque());
+        } else {
+            cout << endl;
+            cout << jefes[posJefe].mostrarNombre() << " ha fallado!" << endl;
+            cout << endl;
+            mostrarEstadoJefes(jugador, jefes, posJefe);
+        }
+    }
+    // Se ejecutan ataques del jefe
+    if (jefes[posJefe].estaVivo() && !turnos.isEmpty()) {
+
+        cout << endl;
+        
+        jugador.cambioVida(-turnos.frontDmg());
+        cout << jefes[posJefe].mostrarNombre() << " ataca y te hace " << turnos.frontDmg() << " de daño."<< endl;
+        turnos.pasarTurno();
+
+        cout << endl;
+
+        mostrarEstadoJefes(jugador, jefes, posJefe);
+    }
+}
 
 void combateJefe(Jugador &jugador, Jefe* jefes, int jefesTotales, string nombre){
     int posJefe = 0;
+    colaCombate turnos;
 
-    // Determinar Jefe
+    // Determinar posición del jefe en el arreglo
     for(int i=0; i<jefesTotales; i++){
         if(jefes[i].mostrarNombre() == nombre){
             posJefe = i;
             break;
         }
     }
-    colaCombate turnos;
-    // Combate contra el Jefe
+
+    cout << endl;
+    cout << "=== COMBATE ===" << endl;
+    cout << endl;
+
+    mostrarEstadoJefes(jugador, jefes, posJefe);
+
     while(jugador.estaVivo() && jefes[posJefe].estaVivo()){
-        cout<<jefes[posJefe].mostrarNombre()<<" VIDA: "<<jefes[posJefe].mostrarVida()<<endl;
-        if(aciertaAtaque(jugador.mostrarPrecision()) == true){
-            turnos.agregarCombatiente(jugador.mostrarAtaque());
-            jefes[posJefe].perderVida(turnos.frontDmg());
-            if(jefes[posJefe].mostrarVida()>0){
-                cout<<"ATACASTE A "<<jefes[posJefe].mostrarNombre()<<" LE HACES "<<jugador.mostrarAtaque()<<" DE DANIO Y LE BAJAS A "<<jefes[posJefe].mostrarVida()<<" DE VIDA "<<endl;
-            } 
-            else{
-                cout<<"ATACASTE A "<<jefes[posJefe].mostrarNombre()<<" LE HACES "<<jugador.mostrarAtaque()<<" DE DANIO Y LE BAJAS A 0 DE VIDA "<<endl;
-            }
-            turnos.pasarTurno();  
-        }else{
-            cout<<"TU ATAQUE FALLO"<<endl;
-        }
-
-        // Jefe a la cola
-        if(jefes[posJefe].estaVivo() && aciertaAtaque(jefes[posJefe].mostrarPrecision()) == true){
-            turnos.agregarCombatiente(jefes[posJefe].mostrarAtaque());  
-        }else if(jefes[posJefe].estaVivo()){
-            cout<<jefes[posJefe].mostrarNombre()<< " falla!"<<endl;
-        }   
-
-        // Jefe hace dmg a jugador
-        if(jefes[posJefe].estaVivo() && !turnos.isEmpty()){
-            jugador.cambioVida(-turnos.frontDmg());
-            if(jugador.mostrarVida()<0){
-                cout<<"TE HICIERON "<<turnos.frontDmg()<<" DE DANIO, AHORA TIENES 0 DE VIDA."<<endl; //paso para no mostrar vida negativa
-            }
-            else{
-                cout<<"TE HICIERON "<<turnos.frontDmg()<<" DE DANIO, AHORA TIENES "<<jugador.mostrarVida()<<" DE VIDA."<<endl;
-            }
-            
-            turnos.pasarTurno(); 
-            if(jugador.estaVivo() == false) break; //si el jugador muere, se sale altiro del ciclo
-        }
-    }
     
-    if(jugador.estaVivo()){
-        cout<<"GANASTE :D"<<endl;
+        cout << endl;
+    
+        turnoJugadorJefes(jugador, jefes, posJefe, turnos);
+
+        cout << endl;
+
+        mostrarEstadoJefes(jugador, jefes, posJefe);
+
+        turnoJefe(jugador, jefes, posJefe, turnos);
     }
     
 }
+
+// =============================================
+// Sección 8: Mejoras de atributos
+// =============================================
 
 struct statsMejoras{
     string* info;
@@ -775,6 +871,20 @@ struct statsMejoras{
     int recuperacion;
 };
 
+/*****
+* statsMejoras leerMejoras
+******
+* Lee y procesa las mejoras de atributos de mejoras desde un archivo.
+******
+* Input:
+* fstream &file : Referencia al archivo ya abierto para lectura
+* int &cant_mejoras : Referencia donde se almacena la cantidad de mejoras leídas
+******
+* Returns:
+* statsMejoras , struct con:
+* - Campos numéricos para cada atributo mejorable
+* - Arreglo dinámico de strings con descripciones completas
+*****/
 statsMejoras leerMejoras(fstream &file, int &cant_mejoras){
     string descartable;
     statsMejoras mejoras;
@@ -816,6 +926,20 @@ statsMejoras leerMejoras(fstream &file, int &cant_mejoras){
     return mejoras;
 }
 
+/*****
+* void panelMejoras
+******
+* Muestra un menú de mejoras post-combate y aplica la selección del jugador.
+* Primero recupera vida base y luego permite elegir una mejora permanente.
+******
+* Input:
+* Jugador &jugador : Referencia al jugador que recibirá las mejoras
+* statsMejoras mejoras : Estructura con valores de mejoras disponibles
+* int mejorasTotales : Cantidad total de mejoras (no utilizado actualmente)
+******
+* Returns:
+* void , Modifica los atributos del jugador según la elección
+*****/
 void panelMejoras(Jugador &jugador, statsMejoras mejoras, int mejorasTotales){
     cout<<"Has sobrevivido el combate!"<<endl;
     cout<<"Recuperas "<<jugador.mostrarRecuperacion()<<" de vida tras el combate."<<endl;
@@ -846,6 +970,10 @@ void panelMejoras(Jugador &jugador, statsMejoras mejoras, int mejorasTotales){
     }
 }
 
+// =============================================
+// Sección 9: Eventos
+// =============================================
+
 struct Evento {
     string nombre;
     double probabilidad;
@@ -856,6 +984,19 @@ struct Evento {
     string* consecuencias;
 };
 
+/*****
+* Evento* leerEventos
+******
+* Lee y carga eventos aleatorios desde archivo, incluyendo sus opciones y consecuencias.
+* Asigna memoria dinámica para los arreglos de opciones y sus propiedades.
+******
+* Input:
+* fstream &file : Archivo ya abierto en modo lectura
+* int &cant_eventos : Variable donde se almacenará la cantidad de eventos leídos
+******
+* Returns:
+* Evento* , Arreglo dinámico de eventos completamente inicializados
+*****/
 Evento* leerEventos(fstream &file, int &cant_eventos){
     string descartable;
     getline(file, descartable);
@@ -883,32 +1024,52 @@ Evento* leerEventos(fstream &file, int &cant_eventos){
     return eventos;
 }
 
+/*****
+* void panelEventos
+******
+* Selecciona y ejecuta un evento aleatorio basado en probabilidades.
+******
+* Input:
+* Jugador &jugador : Referencia al jugador afectado por el evento
+* Jefe* jefes : Arreglo de jefes que pueden ser afectados
+* Evento* eventos : Arreglo de eventos posibles
+* int cantidadEventos : Total de eventos disponibles
+******
+* Returns:
+* void , Modifica estados del juego según el evento ocurrido
+*****/
 void panelEventos(Jugador &jugador, Jefe* jefes, Evento* eventos, int cantidadEventos){
     double* pesos = new double[cantidadEventos];
-    for(int i=0; i<cantidadEventos;i++){
+    for(int i = 0; i < cantidadEventos; i++){
         pesos[i] = eventos[i].probabilidad;
     }
     int evento = enteroConProbabilidad(0, cantidadEventos - 1, pesos);
     
-    cout<<eventos[evento].nombre<<endl<<eventos[evento].informacion<<endl;
+    cout << eventos[evento].nombre << endl << eventos[evento].informacion << endl;
     for(int j=0; j<eventos[evento].cantidadOpciones; j++){
-        cout<<eventos[evento].opciones[j]<<endl;
+        cout << eventos[evento].opciones[j] << endl;
     }
     
     int opcion;
     char opcionElegida;
-    cout<<"Que deseas hacer? (Elija SOLO entre las opciones disponibles y en mayusculas :3) "<<endl;cin>>opcionElegida;
-    if(opcionElegida=='A'){
-        opcion=0;
+    cout << "Que deseas hacer?" << endl;
+    cin >> opcionElegida;
+    while (true) {
+        if (opcionElegida=='1') {
+            opcion=0;
+            break;
+        } else if (opcionElegida=='2') {
+            opcion=1;
+            break;
+        } else if (opcionElegida=='3') {
+            opcion=2;
+            break;
+        }  else {
+            cout << "Opción no válida." << endl;
+        }
     }
-    if(opcionElegida=='B'){
-        opcion=1;
-    }
-    if(opcionElegida=='C'){
-        opcion=2;
-    }
-    cout<<eventos[evento].infoOpciones[opcion]<<endl;
-    cout<<eventos[evento].consecuencias[opcion]<<endl;
+    cout << eventos[evento].infoOpciones[opcion] << endl;
+    cout << eventos[evento].consecuencias[opcion] << endl;
     
     // CocaCola helada
     if (evento == 0 && opcion == 0) {
@@ -930,7 +1091,12 @@ void panelEventos(Jugador &jugador, Jefe* jefes, Evento* eventos, int cantidadEv
     } if (evento == 2 && opcion == 1) {
         jefes[4].recibirAtaque(5);
     }
+
 }
+
+// =============================================
+// Sección 10: Habitaciones y Mapa
+// =============================================
 
 struct Room {
     string nombre;
@@ -951,8 +1117,10 @@ class Mapa {
         int numeroHabitaciones;
         Evento* eventos;
         int cantidadEventos;
+
     public:
         Mapa(){inicio = nullptr; actual = nullptr; numeroHabitaciones = 0; eventos = nullptr;}
+        
         void armarMapa(fstream &file){
             int n;
             string descartable;
@@ -1025,7 +1193,7 @@ class Mapa {
             cantidadEventos = n;
         }
 
-        void procesarNodo(Jugador &jugador, Enemigo* enemigos, int enemigosTotales, statsMejoras mejoras, int mejorasTotales, Jefe* jefes, int jefesTotales, bool &juegoCorriendo){
+        void procesarNodo(Jugador &jugador, Enemigo* enemigos, int enemigosTotales, statsMejoras mejoras, int mejorasTotales, Jefe* jefes, int jefesTotales, bool &juegoActivo){
             if(actual->tipoHabitacion == "(COMBATE)"){
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
                 cout<<actual->informacion<<endl;
@@ -1039,7 +1207,7 @@ class Mapa {
                 cout<<actual->informacion<<endl;
                 combateJefe(jugador,jefes,jefesTotales,actual->nombreJefe);
                 if(jugador.estaVivo() && actual->nombre != "Habitacion de Harley"){ // es decir, que el jugador salio vivo del combate
-                    juegoCorriendo = false;
+                    juegoActivo = false;
                 }
                 cout<<actual->mensajeFinal<<endl;
             }
@@ -1054,7 +1222,7 @@ class Mapa {
                     combateJefe(jugador,jefes,jefesTotales,"El Acertijo");
                     if(jugador.estaVivo()){
                         cout<<"Algo que pase si estas vivo :v"<<endl;
-                        juegoCorriendo = false;
+                        juegoActivo = false;
                     }
                 }
                 else{
@@ -1093,36 +1261,56 @@ class Mapa {
         }
 };
 
+// =============================================
+// Sección 11: Main
+// =============================================
+
 int main(){
-    fstream file;
+    // Se inician variables
     Jugador Batman;
-    file.open("data.map", ios::in);
-    Mapa mapa;
-    mapa.armarMapa(file);
-    int cant_eventos;
-    Evento* eventos = leerEventos(file, cant_eventos);
-    mapa.recibirEventos(eventos, cant_eventos);
     int cant_enemigos;
     int cant_jefes;
     int cant_mejoras;
-    statsEnemigos* arrayStatsEnemigos = leerEnemigos(file, cant_enemigos);
+    int cant_eventos;
+    Mapa mapa;
+    bool juegoActivo;
+    
+    // Se abre el archivo data.map
+    fstream file;
+    file.open("data.map", ios::in);
+    
+    // Se arma el mapa y se crea el arreglo de eventos para crear sus habitaciones respectivas
+    mapa.armarMapa(file);
+    Evento* eventos = leerEventos(file, cant_eventos);
+    mapa.recibirEventos(eventos, cant_eventos);
+
+    // Se leen los datos de enemigos y jefes
+    statsEnemigos* arrayStatsEnemigos = leerEnemigos(file, cant_enemigos);  
     statsJefes* arrayStatsJefes = leerJefes(file, cant_jefes);
-    statsMejoras mejoras = leerMejoras(file, cant_mejoras);
+
+    // Creación de los arreglos de enemigos y jefes
     Enemigo* enemigos = procesarEnemigos(arrayStatsEnemigos, cant_enemigos);
     Jefe* jefes = procesarJefes(arrayStatsJefes, cant_jefes);
-    //cout introducción
-    //cout primeros caminos
-    bool juegoCorriendo = true;
-    cout<<"Inicio del videojuego, bienvenido al asilo de Arkham, eres Batman en una noche oscura y lluviosa dentro del asilo, y debes derrotar a tus peores enemigos, te notifican que Gordon ha sido capturado por el espantapajaros, y encerrado en el centro médico."<<endl;
+
+    // Lectura de las mejoras disponibles para el jugador
+    statsMejoras mejoras = leerMejoras(file, cant_mejoras);
+    
+    cout<<"Es una noche oscura y lluviosa en el asilo de Arkham. Los mequetrefes han tomado control del recinto y han capturado al comisionado Gordon en el centro médico. Eres Batman, el mejor detective del mundo, y debes llegar al fondo de todo esto."<<endl;
+    
+    // Ejecutamos el juego
     while(Batman.estaVivo()){
-        mapa.procesarNodo(Batman, enemigos, cant_enemigos, mejoras, cant_mejoras, jefes, cant_jefes, juegoCorriendo);
-        if (Batman.estaVivo() == false) {
-            cout<<"YOU DIED"<<endl;
+        mapa.procesarNodo(Batman, enemigos, cant_enemigos, mejoras, cant_mejoras, jefes, cant_jefes, juegoActivo);
+        
+        // Muerte de Batman
+        if (!Batman.estaVivo()) {
+            cout<<"Has muerto en combate. Gotham ya no tiene salvacion."<<endl;
             break;
         }
-        if(!juegoCorriendo){
+
+        // El jugador terminó exitosamente el juego
+        if(!juegoActivo){
+            cout<<"Gracias por prestar tus servicios. Gotham te va a recordar."<<endl;
             break;
         }
     }
-    cout<<"Felicidades, saliste del videojuego, ESTE ES JOVANIIII"<<endl;
 }

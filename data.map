@@ -161,10 +161,10 @@ Probabilidad
 Encuentras un refresco apetecible...
 Cantidad de opciones
 2
-A: Tomarlo
+1. Tomarlo
 Tomas el refresco
 te mueres
-B: Dejarlo
+2. Dejarlo
 Lo dejas pasar 
 no hay ninguna consecuencia
 Paquete de Lucius Fox
@@ -173,13 +173,13 @@ Probabilidad
 Lucius Fox te envia la herramienta...
 Cantidad de opciones
 3
-A: Batarangs explosivos
+1. Batarangs explosivos
 Recoges los batarangs explosivos
 +10 ataque
-B: Armadura de kevlar
+2. Armadura de kevlar
 Recoges la armadura de kevlar
 +5 Vida
-C: Lentes de vision nocturna
+3. Lentes de vision nocturna
 Recoges los lentes de vision nocturna
 +0.3 Precision
 Destello verde
@@ -188,10 +188,10 @@ Probabilidad
 Ves una luz verde titilando en la distancia...
 Cantidad de opciones
 2
-A: Te acercas a ver que es.
+1. Te acercas a ver que es.
 ¡Se trata de un trofeo del Acertijo!
 +0.2 Sigilo
-B: No le prestas atencion.
+2. No le prestas atencion.
 Pasas de la luz
 +5 daño Acertijo
 ENEMIGOS 
