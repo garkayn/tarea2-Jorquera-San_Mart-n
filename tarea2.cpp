@@ -1212,16 +1212,15 @@ class Mapa {
                 cout<<actual->mensajeFinal<<endl;
             }
             if(actual->tipoHabitacion == "(FINAL)"){
-                cout<<"Cordura: "<<jugador.mostrarCordura()<<endl;
                 if(actual->nombre == "Oficina del alcaide" && jugador.mostrarCordura()<5){ //caso donde esta la mecanica final
-                    cout<<"Textito que queremos"<<endl;
+                    cout<<"Una sombra... una aguja... una risa lejana. Parpadeas. Estas de vuelta. Algo no encaja. ¿Siempre estuviste aqui?"<<endl;
                     actual = inicio;
                 }
-                else if(actual->nombre == "Habitacion Acertijo" && jugador.mostrarCordura()>=5){
-                    cout<<"Algun texto raro"<<endl;
+                else if(actual->nombre == "Archivo del fundador" && jugador.mostrarCordura()>=5){
+                    cout<<"Las estanterias se extienden en laberintos imposibles, iluminadas por el resplandor verde de multiples monitores. En el centro, una consola con enigmas sin resolver, esperando la siguiente jugada. No es solo una batalla física; es un duelo de mentes, donde cada movimiento debe ser tan calculado como un acertijo. La mente mas peligrosa de Arkham te desafia a demostrar que puedes seguir su juego... y ganarle."<<endl;
                     combateJefe(jugador,jefes,jefesTotales,"El Acertijo");
                     if(jugador.estaVivo()){
-                        cout<<"Algo que pase si estas vivo :v"<<endl;
+                        cout<<"Las pantallas que antes destellaban enigmas ahora muestran un brillo estable y sereno. La precision del orden se quiebra, y con ella, la fria prision mental se desmorona. Has descifrado el ultimo secreto, desarmado la trampa perfecta. El silencio inunda la sala, pero no es vacio, es triunfo. El Acertijo queda vencido, su mente finalmente doblegada por la tuya. En este santuario del conocimiento, Gotham encuentra una esperanza renovada. El murcielago ha demostrado que la mente puede ser su arma mas poderosa."<<endl;
                         juegoActivo = false;
                     }
                 }
@@ -1298,6 +1297,7 @@ int main(){
     cout<<"Es una noche oscura y lluviosa en el asilo de Arkham. Los mequetrefes han tomado control del recinto y han capturado al comisionado Gordon en el centro médico. Eres Batman, el mejor detective del mundo, y debes llegar al fondo de todo esto."<<endl;
     
     // Ejecutamos el juego
+    juegoActivo = true;
     while(Batman.estaVivo()){
         mapa.procesarNodo(Batman, enemigos, cant_enemigos, mejoras, cant_mejoras, jefes, cant_jefes, juegoActivo);
         
@@ -1313,4 +1313,6 @@ int main(){
             break;
         }
     }
+
+    file.close();
 }
