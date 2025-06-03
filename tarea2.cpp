@@ -1053,17 +1053,16 @@ void panelEventos(Jugador &jugador, Jefe* jefes, Evento* eventos, int cantidadEv
     int evento = enteroConProbabilidad(0, cantidadEventos - 1, pesos);
     
     cout << eventos[evento].informacion << endl;
+    cout << endl;
+    cout << "Debes decidir:" << endl;
     for(int j=0; j<eventos[evento].cantidadOpciones; j++){
         cout << eventos[evento].opciones[j] << endl;
     }
     
     int opcion;
     string opcionElegida;
-    cout << endl;
-    cout << "Que deseas hacer?" << endl;
-    cin >> opcionElegida;
-    cout << endl;
     while (true) {
+        cin >> opcionElegida;
         if (opcionElegida=="1") {
             opcion=0;
             break;
@@ -1129,6 +1128,20 @@ class Mapa {
 
     public:
         Mapa(){inicio = nullptr; actual = nullptr; numeroHabitaciones = 0; eventos = nullptr;}
+
+        ~Mapa(){
+            liberarHabitaciones(inicio);
+        }
+
+        void liberarHabitaciones(Room* nodo) {
+            if (nodo == nullptr) return;
+
+            liberarHabitaciones(nodo->izq);
+            liberarHabitaciones(nodo->centro);
+            liberarHabitaciones(nodo->der);
+
+            delete nodo;
+        }
         
         void armarMapa(fstream &file){
             int n;
@@ -1366,7 +1379,7 @@ int main(){
             break;
         }
     }
-     // === LIBERACIÓN DE MEMORIA DINÁMICA ===
+    // === LIBERACIÓN DE MEMORIA DINÁMICA ===
 
     // 1. Enemigos
     delete[] arrayStatsEnemigos;
