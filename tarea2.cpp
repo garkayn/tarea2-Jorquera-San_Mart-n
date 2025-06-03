@@ -413,7 +413,7 @@ void entradaSigilosaOBruto(Jugador &jugador, Enemigo* combatientes, int cantidad
             break;
 
         } else {
-            cout << "Opción no válida. Usa S/N." << endl;
+            cout << "Opción no válida. Usa s/n." << endl;
         }
     }
 }
@@ -433,13 +433,11 @@ void entradaSigilosaOBruto(Jugador &jugador, Enemigo* combatientes, int cantidad
 void mostrarEstadoCombatientes(Jugador &jugador, Enemigo* combatientes, int cantidadEnemigosCombate) {
     cout << "Batman";
     for (int i = 0; i < cantidadEnemigosCombate; i++) {
-        if (combatientes[i].estaVivo()) {
-            cout << " | " << combatientes[i].mostrarNombre();
-        }
+        cout << " | " << combatientes[i].mostrarNombre();
     }
     cout << endl;
     if (jugador.estaVivo()) {
-    cout << jugador.mostrarVida();       
+        cout << jugador.mostrarVida();       
     } else {
         cout << "X";
     }
@@ -1045,7 +1043,7 @@ void panelEventos(Jugador &jugador, Jefe* jefes, Evento* eventos, int cantidadEv
     }
     int evento = enteroConProbabilidad(0, cantidadEventos - 1, pesos);
     
-    cout << eventos[evento].nombre << endl << eventos[evento].informacion << endl;
+    cout << eventos[evento].informacion << endl;
     for(int j=0; j<eventos[evento].cantidadOpciones; j++){
         cout << eventos[evento].opciones[j] << endl;
     }
@@ -1135,12 +1133,14 @@ class Mapa {
             
             for(int i=0;i<n;i++){
                 Room* nuevo = new Room();
+
                 nuevo->izq = nullptr;
                 nuevo->centro = nullptr;
                 nuevo->der = nullptr;
+
                 file >> nuevo->numeroNodo;
                 file >> nuevo->tipoHabitacion;
-                file.ignore(1000, '\n'); //pendiente revisar bien de por que funciona esta linea, y por que se va a la shit sin esto XD
+                file.ignore(1000, '\n'); 
                 getline(file, nuevo->nombre);
                 getline(file, nuevo->informacion);
                 if(nuevo->tipoHabitacion == "(COMBATE_FINAL)"){
@@ -1152,7 +1152,7 @@ class Mapa {
             //ahora procedemos a leer los enlaces
             getline(file, descartable);
             file>>n;
-            file.ignore(1000, '\n'); //agregar las habitaciones de sigilo y brutalidad como habitaciones extra para poder ramificar el arbol
+            file.ignore(1000, '\n');
             int j;
             int k;
             for(int i=0;i<n;i++){
@@ -1206,10 +1206,12 @@ class Mapa {
                 cout<<"-- "<<actual->nombre<<" --"<<endl;
                 cout<<actual->informacion<<endl;
                 combateJefe(jugador,jefes,jefesTotales,actual->nombreJefe);
-                if(jugador.estaVivo() && actual->nombre != "Habitacion de Harley"){ // es decir, que el jugador salio vivo del combate
+                if(jugador.estaVivo() && actual->nombre != "Sala de rehabilitacion" && actual->nombre != "Area de cirugia"){ // es decir, que el jugador salio vivo del combate
                     juegoActivo = false;
                 }
-                cout<<actual->mensajeFinal<<endl;
+                if (jugador.estaVivo()) {
+                    cout<<actual->mensajeFinal<<endl;
+                }
             }
             if(actual->tipoHabitacion == "(FINAL)"){
                 if(actual->nombre == "Oficina del alcaide" && jugador.mostrarCordura()<5){ //caso donde esta la mecanica final
@@ -1241,18 +1243,28 @@ class Mapa {
                 if (actual->izq != nullptr) {
                     cout<<"1. "<<actual->izq->nombre<<endl;
                 } if (actual->centro != nullptr) {
-                    cout<<"2. "<<actual->centro->nombre<<endl;                
+                    cout<<"2. "<<actual->centro->nombre<<endl;         
                 } if (actual->der !=nullptr){
-                    cout<<"3. "<<actual->der->nombre<<endl;                     
+                    cout<<"3. "<<actual->der->nombre<<endl;
                 }
-                cin>>eleccionJugador;
-                if (eleccionJugador == 1) {
-                    actual = actual->izq;
-                } else if (eleccionJugador == 2) {
-                    actual = actual->centro;               
-                } else if (eleccionJugador == 3){
-                    actual = actual->der;                     
-                }   
+
+                while (true) {
+                    cin>>eleccionJugador;
+                    
+                    if (eleccionJugador == 1) {
+                        actual = actual->izq;
+                        break;
+                    } else if (eleccionJugador == 2) {
+                        actual = actual->centro;  
+                        break;             
+                    } else if (eleccionJugador == 3){
+                        actual = actual->der;
+                        break;                  
+                    }  else {
+                        cout << "Opción no válida." << endl;
+                    }
+                }
+ 
             } 
             else {
                 actual = actual->izq;
