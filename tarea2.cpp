@@ -1100,7 +1100,7 @@ void panelEventos(Jugador &jugador, Jefe* jefes, Evento* eventos, int cantidadEv
     } if (evento == 2 && opcion == 1) {
         jefes[4].recibirAtaque(5);
     }
-
+    delete[] pesos;
 }
 
 // =============================================
@@ -1366,6 +1366,26 @@ int main(){
             break;
         }
     }
+     // === LIBERACIÓN DE MEMORIA DINÁMICA ===
+
+    // 1. Enemigos
+    delete[] arrayStatsEnemigos;
+    delete[] enemigos;
+
+    // 2. Jefes
+    delete[] arrayStatsJefes;
+    delete[] jefes;
+
+    // 3. Mejoras
+    delete[] mejoras.info;
+
+    // 4. Eventos
+    for (int i = 0; i < cant_eventos; i++) {
+        delete[] eventos[i].opciones;
+        delete[] eventos[i].infoOpciones;
+        delete[] eventos[i].consecuencias;
+    }
+    delete[] eventos;
 
     file.close();
 }
