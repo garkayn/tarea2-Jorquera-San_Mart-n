@@ -4,7 +4,7 @@ HABITACIONES
 0
 (COMBATE)
 Camara de pacificación de pacientes
-Luego del inesperado escape del Joker, te rodean unos secuaces con toda la pinta de querer acabar contigo, debes enfrentarte a ellos.
+El Joker te estaba esperando. Le ordena a sus secuaces atacarte y él escapa rápidamente.
 1
 (COMBATE)
 Arkham Oeste
@@ -12,19 +12,19 @@ El ala oeste esta en ruinas. De entre las sombras, los presos más violentos se 
 2
 (COMBATE)  
 Arkham Norte  
-El Batmóvil esta siendo atacado por un grupo de reclusos. Te ven y rodean rápidamente.
+El Batmóvil esta siendo atacado por un grupo de reclusos. Te ven y rodean por todos lados.
 3
 (COMBATE)
 Arkham Este
-Ves lo que parece ser un cementerio. De repente, fanaticos del Joker con mascaras salen de su escondite, riendose y blandiendo cuchillos.
+Ves lo que parece ser un cementerio. De repente, fanáticos del Joker con mascaras salen de su escondite, riendose y blandiendo cuchillos.
 4
 (EVENTO)
 Penitenciaria
-Las puertas de maxima seguridad estan abiertas de par en par, y el silencio es mas aterrador que cualquier grito. Algo (o alguien) ha dejado un rastro de huellas de sangre que conduce al nivel inferior.
+Las puertas de maxima seguridad están abiertas de par en par, y el silencio es mas aterrador que cualquier grito. Algo (o alguien) ha dejado un rastro de huellas de sangre que conduce al nivel inferior.
 5
 (FINAL)
 Centro medico
-La voz distorsionada de Harley Quinn resuena en los pasillos del centro médico, burlona, cruel, inconfundible. A lo lejos ves lo que parece ser la figura de Gordon atada a una silla, corres a toda velocidad a salvarlo, empujas la puerta... y te detienes en seco, no es Gordon, es un muñeco con una sonrisa pintada de oreja a oreja. De repente las luces parpadean y el sistema de seguridad se activa, todas las puertas del centro medico se cierran con un estruendo metalico como campanas de un funeral, te han atrapado para siempre, Gotham esta sola, el mundo padece sin su justiciero, mientras la risa de Harley se mezcla con la estatica del comunicador, solo queda imaginar los horrores por venir.
+La voz distorsionada de Harley Quinn resuena en los pasillos del centro médico, burlona, cruel, inconfundible. A lo lejos ves lo que parece ser la figura de Gordon atada a una silla, corres a toda velocidad a salvarlo, empujas la puerta... y te detienes en seco, no es Gordon, es un muñeco con una sonrisa pintada de oreja a oreja. De repente las luces parpadean y el sistema de seguridad se activa, todas las puertas del centro medico se cierran con un estruendo metálico como campanas de un funeral, te han atrapado para siempre, Gotham esta sola, el mundo padece sin su justiciero, mientras la risa de Harley se mezcla con la estatica del comunicador, solo queda imaginar los horrores por venir.
 6
 (EVENTO) 
 Tratamiento intensivo 
@@ -32,7 +32,7 @@ Las luces parpadean sobre las paredes manchadas de sustancias no identificadas. 
 7  
 (EVENTO)  
 Entrada alcantarillado  
-El aire es denso y el agua putrefacta te llega a los tobillos. Ratas huyen de algo mas grande que se mueve entre las sombras. Un susurro grave resuena en los tuneles: "Te estoy esperando, murcielago..."
+El aire es denso y el agua putrefacta te llega a los tobillos. Ratas huyen de algo mas grande que se mueve entre las sombras. Un susurro grave resuena en los tuneles: "Te estoy esperando, múrcielago..."
 8  
 (EVENTO)  
 Mansion Arkham  
@@ -44,7 +44,7 @@ La vegetacion ha crecido salvaje, ahogando todo a su paso. Entre las enredaderas
 10
 (COMBATE)
 Celdas de la Penitenciaria
-Bienvenido a las celdas. El Joker te preparo un recibimiento... personal.
+Bienvenido a las celdas. El Joker te preparó un recibimiento... personal.
 11
 (COMBATE)
 Patio Penitenciaria
@@ -56,25 +56,25 @@ Las paredes acolchadas no evitaron la violencia, solo la disfrazaron, el aire se
 13
 (COMBATE)
 Celdas de alta seguridad
-Aqui encerraron a los peores, o lo intentaron, las cerraduras fallan y solo esuchas respiraciones contenidas, sea lo que sea que rompio el silencio, ya te estan buscando.
+Aqui encerraron a los peores, o lo intentaron, las cerraduras fallan y solo esuchas respiraciones contenidas, sea lo que sea que rompió el silencio, ya te están buscando.
 14
 (COMBATE_FINAL)
 Cloacas
 El agua te llega a las rodillas y el aire apesta a muerte. Algo gigantesco se desliza bajo la superficie. Un gruñido retumba en las paredes humedas. El Cocodrilo Asesino ha salido a cazar… y tú eres la presa.
 Cocodrilo Asesino
-Lo encontraste. Lo venciste. Pero el precio fue mayor de lo que esperabas. Tu cuerpo yace entre escombros humedos y sangre diluida. Mientras las compuertas del asilo siguen abiertas y las risas demente se alejan por los tuneles, entiendes la verdad: nadie mas quedo para detenerlos. Gotham cae… y tu con ella.
+Lo encontraste. Lo venciste. Pero el precio fue mayor de lo que esperabas. Tu cuerpo yace entre escombros húmedos y sangre diluida. Mientras las compuertas del asilo siguen abiertas y las risas demente se alejan por los tuneles, entiendes la verdad: nadie más quedó para detenerlos. Gotham cae… y tu con ella.
 15
 (FINAL)
 Oficina del alcaide
-Las luces parpadean en una secuencia hipnotica. El aire huele a químicos y miedo. Ves al Espantapájaros en el rincon, inmovil, como si te esperara. No alcanzas a reaccionar. Una aguja te perfora el cuello y el mundo se disuelve en alucinaciones retorcidas. Voces, gritos, risas... tus peores miedos cobran forma. Intentas escapar, pero tus piernas ya no responden. Caen tus rodillas, luego el resto. Tu ultima vision es su mascara mirándote en silencio, mientras Gotham se hunde en el delirio.
+Las luces parpadean en una secuencia hipnótica. El aire huele a químicos y miedo. Ves al Espantapájaros en el rincón, inmóvil, como si te esperara. No alcanzas a reaccionar. Una aguja te perfora el cuello y el mundo se disuelve en alucinaciones retorcidas. Voces, gritos, risas... tus peores miedos cobran forma. Intentas escapar, pero tus piernas ya no responden. Caen tus rodillas, luego el resto. Tu ultima visión es su máscara mirándote en silencio, mientras Gotham se hunde en el delirio.
 16
 (COMBATE)
 Piso superior Biblioteca
-Entre las sombras de los estantes altos, algo se mueve. Risas contenidas, pasos que crujen donde no deberian. Este lugar, antes silencioso, se convierte en una trampa. No sabes cuantos te esperan… solo que ya no estas solo.
+Entre las sombras de los estantes altos, algo se mueve. Risas contenidas, pasos que crujen donde no deberian. Este lugar, antes silencioso, se convierte en una trampa. No sabes cuantos te esperan… solo que ya no estas sólo.
 17
 (COMBATE)
 Sala de lectura restringida
-Un rincon olvidado de la biblioteca, custodiado por pesadas rejas de hierro. Aqui se guardan los textos más peligrosos y prohibidos. La atmosfera se vuelve opresiva, y el silencio se rompe con susurros que parecen salir de las paredes. Algo se mueve entre las sombras, esperando para atacar.
+Un rincón olvidado de la biblioteca, custodiado por pesadas rejas de hierro. Aqui se guardan los textos más peligrosos y prohibidos. La atmósfera se vuelve opresiva, y el silencio se rompe con susurros que parecen salir de las paredes. Algo se mueve entre las sombras, esperando para atacar.
 18
 (COMBATE_FINAL)
 Invernadero abandonado
@@ -101,7 +101,7 @@ Harley Quinn
 Luces de neón parpadean sobre paredes cubiertas de dibujos infantiles y frases pintadas con sangre. Un altavoz estalla con una canción desafinada de cumpleaños mientras marionetas colgantes giran lentamente desde el techo. El suelo cruje con cada paso. Todo esta cuidadosamente colocado… como si alguien hubiera estado esperando que llegaras hasta aqui.
 22
 (COMBATE_FINAL)
-Area de cirugia 
+Area de cirugia
 Luces rojas parpadean, alarmas silenciosas destellan en los paneles rotos. Las paredes, manchadas y agrietadas, conservan ecos de gritos apagados. Entre bisturies oxidados y camillas volcadas, la risa aguda de Harley Quinn se mezcla con el zumbido de los altavoces. Este lugar dejo de ser un hospital hace mucho… ahora es su escenario.
 Harley Quinn
 Luces de neón parpadean sobre paredes cubiertas de dibujos infantiles y frases pintadas con sangre. Un altavoz estalla con una canción desafinada de cumpleaños mientras marionetas colgantes giran lentamente desde el techo. El suelo cruje con cada paso. Todo esta cuidadosamente colocado… como si alguien hubiera estado esperando que llegaras hasta aqui.
@@ -124,7 +124,7 @@ El escenario colapsa entre chispazos y humo, la risa del Joker se apaga con un e
 Teatro de pacientes (ex área de terapia grupal)
 Las puertas se abren con un chirrido, y una oleada de luces parpadeantes y musica distorsionada te envuelve. El salon ha sido transformado en un escenario grotesco: cortinas rasgadas, focos temblorosos, y una audiencia de maniquies con sonrisas pintadas que observan en silencio. En el centro, bajo un reflector sangriento, te espera el. La función final esta por comenzar... y el guion lo escribio la locura.
 Joker
-Holi
+El escenario colapsa entre chispazos y humo, la risa del Joker se apaga con un eco quebrado cuando su cuerpo cae, derrotado, entre los escombros de su propio espectaculo. El silencio que sigue no es vacio: es alivio. Gotham respira. Con su caida, el frágil imperio del caos se desmorona. Sin su lider, los villanos retroceden, desorientados, como sombras dispersandose ante la luz del amanecer.Te incorporas, herido pero firme. No hay aplausos. No hay gloria. Solo el peso de una noche interminable que, por fin, ha terminado. El Asilo vuelve a ser solo concreto y ecos. Y en lo alto, sobre las ruinas, se alza de nuevo la figura del murcielago. Gotham esta a salvo.
 ARCOS
 26
 0 -> 1
@@ -157,34 +157,34 @@ EVENTOS
 3
 CocaCola helada
 Probabilidad
-0.1
+0.2
 Encuentras un refresco apetecible...
 Cantidad de opciones
 2
 1. Tomarlo
 Tomas el refresco
-te mueres
+En tu cabeza empieza a resonar una risa conocida, te pierdes en ella. Nunca mas te vuelves a levantar.
 2. Dejarlo
 Lo dejas pasar 
-no hay ninguna consecuencia
+nada ocurre.
 Paquete de Lucius Fox
 Probabilidad
-0.6
+0.4
 Lucius Fox te envia la herramienta...
 Cantidad de opciones
 3
 1. Batarangs explosivos
 Recoges los batarangs explosivos
-+10 ataque
++8 ataque
 2. Armadura de kevlar
 Recoges la armadura de kevlar
-+5 Vida
++15 Vida
 3. Lentes de vision nocturna
 Recoges los lentes de vision nocturna
 +0.3 Precision
 Destello verde
 Probabilidad
-0.3
+0.4
 Ves una luz verde titilando en la distancia...
 Cantidad de opciones
 2
@@ -203,21 +203,19 @@ Vida 15 Ataque 5 Precision 0.5 Probabilidad 0.3
 Titan
 Vida 30 Ataque 10 Precision 0.2 Probabilidad 0.2
 JEFES
-7
+6
 Bane
 Vida 50 Ataque 20 Precision 0.5
 Harley Quinn
 Vida 25 Ataque 12 Precision 0.9
 Cocodrilo Asesino
 Vida 60 Ataque 15 Precision 0.5
-Espantapajaros
-Vida 20 Ataque 4 Precision 0.5
 El Acertijo
-Vida 10 Ataque 2 Precision 1
+Vida 30 Ataque 6 Precision 1.0
 Hiedra Venenosa
-Vida 30 Ataque 10 Precision 0.6
+Vida 20 Ataque 20 Precision 0.8
 Joker
-Vida 15 Ataque 6 Precision 0.9
+Vida 35 Ataque 10 Precision 0.8
 MEJORAS DE COMBATE
 5
 Vida 4

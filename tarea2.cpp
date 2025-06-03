@@ -89,7 +89,7 @@ class Jugador {
         int recuperacion;
 
     public :
-        Jugador(){vida = 60; ataque = 5; precision = 0.8; cordura = 6; sigilo = 0.2; recuperacion = 5;}
+        Jugador(){vida = 60; ataque = 7; precision = 0.8; cordura = 6; sigilo = 0.2; recuperacion = 5;}
         // Métodos de modificación
         void cambioVida(int cambio){
             vida += cambio;
@@ -367,7 +367,6 @@ void seleccionarEnemigos(Enemigo* enemigos, int enemigosTotales, Enemigo* combat
     for (int j = 0; j < cantidadEnemigosCombate; j++) {
         int seleccionadorEnemigo = enteroConProbabilidad(0, enemigosTotales - 1, pesos);
         combatientes[j] = enemigos[seleccionadorEnemigo];
-        cout << combatientes[j].mostrarNombre() << endl;
     }
     delete[] pesos;
 }
@@ -724,11 +723,7 @@ Jefe* procesarJefes(statsJefes* array, int cantidad){
 * void , Imprime el estado del combate
 *****/
 void mostrarEstadoJefes (Jugador &jugador, Jefe* jefes, int posJefe) {
-    cout << "Batman";
-
-    if (jefes[posJefe].estaVivo()) {
-        cout << " | " << jefes[posJefe].mostrarNombre();
-    }
+    cout << "Batman" << " | " << jefes[posJefe].mostrarNombre();
 
     cout << endl;
 
@@ -939,32 +934,46 @@ statsMejoras leerMejoras(fstream &file, int &cant_mejoras){
 * void , Modifica los atributos del jugador según la elección
 *****/
 void panelMejoras(Jugador &jugador, statsMejoras mejoras, int mejorasTotales){
-    cout<<"Has sobrevivido el combate!"<<endl;
-    cout<<"Recuperas "<<jugador.mostrarRecuperacion()<<" de vida tras el combate."<<endl;
+    cout << endl;
+    cout << "Has sobrevivido el combate!" << endl;
+    cout << endl;
+    cout << "Recuperas "<< jugador.mostrarRecuperacion() << " de vida tras el combate." << endl;
+
     jugador.cambioVida(jugador.mostrarRecuperacion());
-    cout<<"Debes decidir:"<<endl;
-    int eleccion;
-    cout<<"1. +"<<mejoras.vida<<" de vida."<<endl;
+
+    cout << endl;
+    cout << "Debes decidir:" << endl;
+    string eleccion;
+    cout << "1. +" << mejoras.vida<<" de vida."<<endl;
     cout<<"2. +"<<mejoras.ataque<<" de ataque."<<endl;
     cout<<"3. +"<<mejoras.precision<<" de precision."<<endl;
     cout<<"4. +"<<mejoras.sigilo<<" de sigilo."<<endl;
     cout<<"5. +"<<mejoras.recuperacion<<" de recuperacion."<<endl;
-    cin>>eleccion;
-    if (eleccion == 1){
-        jugador.cambioVida(mejoras.vida);
-        cout<<"Vida actual: "<<jugador.mostrarVida()<<endl;
-    } if (eleccion == 2) {
-        jugador.cambioAtaque(mejoras.ataque);
-        cout<<"Ataque actual: "<<jugador.mostrarAtaque()<<endl;      
-    } if (eleccion == 3) {
-        jugador.cambioPresicion(mejoras.precision);
-        cout<<"Precision actual: "<<jugador.mostrarPrecision()<<endl;
-    } if (eleccion == 4) {
-        jugador.cambioSigilo(mejoras.sigilo);
-        cout<<"Sigilo actual: "<<jugador.mostrarSigilo()<<endl;
-    } if (eleccion == 5) {
-        jugador.cambioRecuperacion(mejoras.recuperacion);
-        cout<<"Ahora recuperas "<<jugador.mostrarRecuperacion()<<" puntos de vida despues de un combate."<<endl;     
+    while (true) {
+        cin>>eleccion;
+        if (eleccion == "1"){
+            jugador.cambioVida(mejoras.vida);
+            cout<<"Vida actual: "<<jugador.mostrarVida()<<endl;
+            break;
+        } else if (eleccion == "2") {
+            jugador.cambioAtaque(mejoras.ataque);
+            cout<<"Ataque actual: "<<jugador.mostrarAtaque()<<endl; 
+            break;     
+        } else if (eleccion == "3") {
+            jugador.cambioPresicion(mejoras.precision);
+            cout<<"Precision actual: "<<jugador.mostrarPrecision()<<endl;
+            break;
+        } else if (eleccion == "4") {
+            jugador.cambioSigilo(mejoras.sigilo);
+            cout<<"Sigilo actual: "<<jugador.mostrarSigilo()<<endl;
+            break;
+        } else if (eleccion == "5") {
+            jugador.cambioRecuperacion(mejoras.recuperacion);
+            cout<<"Ahora recuperas "<<jugador.mostrarRecuperacion()<<" puntos de vida despues de un combate."<<endl;
+            break;  
+        } else {
+            cout << "Opción no válida. Ingrese de nuevo." << endl;
+        }
     }
 }
 
@@ -1049,21 +1058,23 @@ void panelEventos(Jugador &jugador, Jefe* jefes, Evento* eventos, int cantidadEv
     }
     
     int opcion;
-    char opcionElegida;
+    string opcionElegida;
+    cout << endl;
     cout << "Que deseas hacer?" << endl;
     cin >> opcionElegida;
+    cout << endl;
     while (true) {
-        if (opcionElegida=='1') {
+        if (opcionElegida=="1") {
             opcion=0;
             break;
-        } else if (opcionElegida=='2') {
+        } else if (opcionElegida=="2") {
             opcion=1;
             break;
-        } else if (opcionElegida=='3') {
+        } else if (opcionElegida=="3") {
             opcion=2;
             break;
         }  else {
-            cout << "Opción no válida." << endl;
+            cout << "Opción no válida. Ingrese de nuevo." << endl;
         }
     }
     cout << eventos[evento].infoOpciones[opcion] << endl;
@@ -1195,73 +1206,99 @@ class Mapa {
 
         void procesarNodo(Jugador &jugador, Enemigo* enemigos, int enemigosTotales, statsMejoras mejoras, int mejorasTotales, Jefe* jefes, int jefesTotales, bool &juegoActivo){
             if(actual->tipoHabitacion == "(COMBATE)"){
-                cout<<"-- "<<actual->nombre<<" --"<<endl;
-                cout<<actual->informacion<<endl;
+                cout << "=== " << actual->nombre << " ===" << endl;
+                cout << endl;
+                cout << actual->informacion<<endl;
+
                 combate(jugador,enemigos,enemigosTotales);
+
                 if(jugador.estaVivo()){
                     panelMejoras(jugador, mejoras, mejorasTotales);
                 }
             }
+            
             if(actual->tipoHabitacion == "(COMBATE_FINAL)"){
-                cout<<"-- "<<actual->nombre<<" --"<<endl;
+                cout<<"=== "<<actual->nombre<<" ==="<<endl;
+                cout << endl;
                 cout<<actual->informacion<<endl;
+
                 combateJefe(jugador,jefes,jefesTotales,actual->nombreJefe);
+
                 if(jugador.estaVivo() && actual->nombre != "Sala de rehabilitacion" && actual->nombre != "Area de cirugia"){ // es decir, que el jugador salio vivo del combate
                     juegoActivo = false;
                 }
                 if (jugador.estaVivo()) {
-                    cout<<actual->mensajeFinal<<endl;
+                    cout << endl;
+                    cout << actual->mensajeFinal << endl;
+                    cout << endl;
                 }
             }
+
             if(actual->tipoHabitacion == "(FINAL)"){
-                if(actual->nombre == "Oficina del alcaide" && jugador.mostrarCordura()<5){ //caso donde esta la mecanica final
-                    cout<<"Una sombra... una aguja... una risa lejana. Parpadeas. Estas de vuelta. Algo no encaja. ¿Siempre estuviste aqui?"<<endl;
+                if(actual->nombre == "Oficina del alcaide" && jugador.mostrarCordura()<5){
+                    cout << endl;
+                    cout << "Una sombra... una aguja... una risa lejana. Parpadeas. Estas de vuelta. Algo no encaja. ¿Siempre estuviste aqui?" << endl;
                     actual = inicio;
                 }
                 else if(actual->nombre == "Archivo del fundador" && jugador.mostrarCordura()>=5){
-                    cout<<"Las estanterias se extienden en laberintos imposibles, iluminadas por el resplandor verde de multiples monitores. En el centro, una consola con enigmas sin resolver, esperando la siguiente jugada. No es solo una batalla física; es un duelo de mentes, donde cada movimiento debe ser tan calculado como un acertijo. La mente mas peligrosa de Arkham te desafia a demostrar que puedes seguir su juego... y ganarle."<<endl;
+                    cout << endl;
+                    cout << "Las estanterias se extienden en laberintos imposibles, iluminadas por el resplandor verde de multiples monitores. En el centro, una consola con enigmas sin resolver, esperando la siguiente jugada. No es solo una batalla física; es un duelo de mentes, donde cada movimiento debe ser tan calculado como un acertijo. La mente mas peligrosa de Arkham te desafia a demostrar que puedes seguir su juego... y ganarle." << endl;
+                    
                     combateJefe(jugador,jefes,jefesTotales,"El Acertijo");
+
                     if(jugador.estaVivo()){
-                        cout<<"Las pantallas que antes destellaban enigmas ahora muestran un brillo estable y sereno. La precision del orden se quiebra, y con ella, la fria prision mental se desmorona. Has descifrado el ultimo secreto, desarmado la trampa perfecta. El silencio inunda la sala, pero no es vacio, es triunfo. El Acertijo queda vencido, su mente finalmente doblegada por la tuya. En este santuario del conocimiento, Gotham encuentra una esperanza renovada. El murcielago ha demostrado que la mente puede ser su arma mas poderosa."<<endl;
+                        cout << endl;
+                        cout << "Las pantallas que antes destellaban enigmas ahora muestran un brillo estable y sereno. La precision del orden se quiebra, y con ella, la fria prision mental se desmorona. Has descifrado el ultimo secreto, desarmado la trampa perfecta. El silencio inunda la sala, pero no es vacio, es triunfo. El Acertijo queda vencido, su mente finalmente doblegada por la tuya. En este santuario del conocimiento, Gotham encuentra una esperanza renovada. El murcielago ha demostrado que la mente puede ser su arma mas poderosa." << endl;
+                        
                         juegoActivo = false;
                     }
                 }
                 else{
-                    cout<<"-- "<<actual->nombre<<" --"<<endl;
-                    cout<<actual->informacion<<endl;
+                    cout << "=== "<<actual->nombre << " ===" << endl;
+                    cout << endl;
+                    cout << actual->informacion << endl;
+
                     jugador.matarJugador();
                 }
             }
+
             if(actual->tipoHabitacion == "(EVENTO)"){
-                cout<<"-- "<<actual->nombre<<" --"<<endl;
-                cout<<actual->informacion<<endl;
+                cout << "=== "<<actual->nombre << " ===" << endl;
+                cout << endl;
+                cout << actual->informacion << endl;
+
                 panelEventos(jugador, jefes, eventos, cantidadEventos);
             }
+
+            // Movimiento entre habitaciones
             if (jugador.estaVivo() && (actual->centro != nullptr || actual->der != nullptr)) {
-                int eleccionJugador;
-                cout<<"A donde quieres ir?"<<endl;
+                string eleccionJugador;
+
+                cout << endl;
+                cout << "A donde quieres ir?" << endl;
+
                 if (actual->izq != nullptr) {
-                    cout<<"1. "<<actual->izq->nombre<<endl;
+                    cout << "1. " << actual->izq->nombre << endl;
                 } if (actual->centro != nullptr) {
-                    cout<<"2. "<<actual->centro->nombre<<endl;         
+                    cout << "2. " << actual->centro->nombre << endl;         
                 } if (actual->der !=nullptr){
-                    cout<<"3. "<<actual->der->nombre<<endl;
+                    cout << "3. " << actual->der->nombre << endl;
                 }
 
                 while (true) {
                     cin>>eleccionJugador;
-                    
-                    if (eleccionJugador == 1) {
+
+                    if (eleccionJugador == "1") {
                         actual = actual->izq;
                         break;
-                    } else if (eleccionJugador == 2) {
+                    } else if (eleccionJugador == "2") {
                         actual = actual->centro;  
                         break;             
-                    } else if (eleccionJugador == 3){
+                    } else if (eleccionJugador == "3"){
                         actual = actual->der;
                         break;                  
                     }  else {
-                        cout << "Opción no válida." << endl;
+                        cout << "Opción no válida. Ingrese de nuevo." << endl;
                     }
                 }
  
@@ -1306,8 +1343,10 @@ int main(){
     // Lectura de las mejoras disponibles para el jugador
     statsMejoras mejoras = leerMejoras(file, cant_mejoras);
     
-    cout<<"Es una noche oscura y lluviosa en el asilo de Arkham. Los mequetrefes han tomado control del recinto y han capturado al comisionado Gordon en el centro médico. Eres Batman, el mejor detective del mundo, y debes llegar al fondo de todo esto."<<endl;
-    
+    cout << "Es una noche oscura y lluviosa en el asilo de Arkham. Los mequetrefes han tomado control del recinto y han capturado al comisionado Gordon en el centro médico." << endl;
+    cout << "Eres Batman, el mejor detective del mundo, y debes llegar al fondo de todo esto." << endl;
+    cout << endl;
+
     // Ejecutamos el juego
     juegoActivo = true;
     while(Batman.estaVivo()){
@@ -1315,13 +1354,15 @@ int main(){
         
         // Muerte de Batman
         if (!Batman.estaVivo()) {
-            cout<<"Has muerto en combate. Gotham ya no tiene salvacion."<<endl;
+            cout << endl;
+            cout << "Has muerto en combate. Gotham ya no tiene salvacion." << endl;
             break;
         }
 
         // El jugador terminó exitosamente el juego
         if(!juegoActivo){
-            cout<<"Gracias por prestar tus servicios. Gotham te va a recordar."<<endl;
+            cout << endl;
+            cout << "Gracias por prestar tus servicios. Gotham te va a recordar." << endl;
             break;
         }
     }
